@@ -6,7 +6,7 @@
 *******************************************/
 #include <stdint.h>
 extern uint32_t milliseconds;
-typedef uint8_t bool;
+//typedef uint8_t bool;
 
 /*********************************************
 * System and std lib includes and definitions

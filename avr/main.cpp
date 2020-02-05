@@ -3,7 +3,7 @@
 #include "project.h"
 
 // Assign stdin and stdout streams to our functions that handle serial port
-static FILE usart0stdio = FDEV_SETUP_STREAM(USART0SendByte, USART0ReceiveByte, _FDEV_SETUP_RW);
+//static FILE usart0stdio = FDEV_SETUP_STREAM(USART0SendByte, USART0ReceiveByte, _FDEV_SETUP_RW);
 
 static volatile uint8_t isrMilliseconds = 0;
 static volatile uint8_t isrLastMilleseconds = 0;
@@ -15,7 +15,17 @@ int main(void)
     uint8_t taskNum = 0;
 
     cfgSerial(S_BAUD_115200, S_FORMAT_8N1);
-    stdin=stdout=&usart0stdio;
+
+    FILE uart_str; 
+    uart_str.put = USART0SendByte;
+    uart_str.get = USART0ReceiveByte;
+    uart_str.flags = _FDEV_SETUP_RW;
+    
+    stdout = stdin = &uart_str;
+
+
+
+    //stdin=stdout=&usart0stdio; 
     
     setupIO();
     setupTimer2();
@@ -25,7 +35,7 @@ int main(void)
     setupWatchdog();
     sei();
 
-    printflash("Starting metronome main loop\r\n");
+    printf_P(PSTR("Starting metronome main loop\r\n"));
 
     uint16_t blinkyTimer = 0;
 

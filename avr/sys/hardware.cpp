@@ -7,6 +7,8 @@
 ***************************************/
 void setupIO(void)
 {
+    // set as outputs initially; these are the
+    // LCD lines
     DDRC = 0b00111111;
     PORTC = 0x00;
 
