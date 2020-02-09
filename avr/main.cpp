@@ -12,7 +12,10 @@
 #include "sys/hardware.h"
 #include "sys/eeprom.h"
 #include "sys/serialPrintf.h"
+
 #include "lcd/lcd.h"
+#include "string/LEDString.h"
+#include "buttons/buttons.h"
 
 // Assign stdin and stdout streams to our functions that handle serial port
 //static FILE usart0stdio = FDEV_SETUP_STREAM(USART0SendByte, USART0ReceiveByte, _FDEV_SETUP_RW);
@@ -36,6 +39,8 @@ int main(void)
     stdout = stdin = &uart_str;
     
     lcd* display = lcd::getInstance();
+    LEDString* string = LEDString::getInstance();
+    buttons* intfc = buttons::getInstance();
 
     setupIO();
     setupTimer2();
@@ -77,12 +82,12 @@ int main(void)
 
             case 1:
             {
-
+                intfc->update();
             }  break;
             
             case 2:
             {
-
+                string->update();
             }  break;
             
             case 3:

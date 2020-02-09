@@ -13,3 +13,8 @@ LEDString* LEDString::getInstance()
 
     return (_inst);
 }
+
+void LEDString::update()
+{
+    
+}

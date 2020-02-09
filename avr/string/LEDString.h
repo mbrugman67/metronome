@@ -7,7 +7,7 @@
 class LEDString
 {
 public:
-    LEDString* getInstance();
+    static LEDString* getInstance();
 
     void start(uint16_t bpm);
     void stop();
