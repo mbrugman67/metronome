@@ -22,6 +22,7 @@ OUTDIR=./bin/
 TARGET=$(OUTDIR)metronome
 
 CFLAGS=-Wall -mmcu=atmega328p -DF_CPU=16000000UL -Os -DLITTLE_ENDIAN -Os -I$(AVR_INCL_DIR) -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -ffunction-sections -fdata-sections
+CFLAGS+= -DDEBUG
 
 LDFLAGS=-mmcu=atmega328p -Wl,-u,--gc-sections,-Map=$(TARGET).map,--cref
 LDLIBS=

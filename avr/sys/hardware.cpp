@@ -1,4 +1,5 @@
 #include "../project.h"
+#include "../lcd/lcd.h"
 
 /***************************************
 * setupIO()
@@ -50,5 +51,9 @@ void setupTimer2(void)
     
     // enable interrupt on A
     TIMSK2 = BIT(OCIE2A);
+
+    lcd* another = lcd::getInstance();
+    another->writeCharAt(LINE_3, 12, 'f');
+    another->writeLineAt(LINE_4, 13, "heynow");
       
 }

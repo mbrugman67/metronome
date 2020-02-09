@@ -4,6 +4,95 @@
 #define MAX_LINE_LENGTH     20
 #define MAX_LINE_COUNT      4
 
+lcd* lcd::_inst = NULL;
+
+lcd* lcd::getInstance()
+{
+    if (!_inst)
+    {
+        _inst = (lcd*)malloc(sizeof(lcd));
+        _inst->init();
+    }
+
+    return (_inst);
+}
+
+void lcd::clearAll()
+{
+    this->sendCmd(0x01); // clear the whole thang
+    _delay_ms(1.64);     // This command takes 1.64 ms
+
+#ifdef DEBUG
+    printf_P(PSTR("LCD total clear done\n"));
+#endif
+}
+
+void lcd::clearLine(lcd_line_t line)
+{
+    this->writeLine(line, blank);
+
+#ifdef DEBUG
+    printf_P(PSTR("LCD Clear line %d\n"), (uint8_t)line);
+#endif
+}
+
+void lcd::writeLine(lcd_line_t line, char* text)
+{
+    this->writeLineAt(line, 0, text);
+}
+
+void lcd::writeLine(lcd_line_t line, const char* text)
+{
+    strncpy(lineBuffer, text, 20);
+    this->writeLineAt(line, 0, lineBuffer);
+}
+
+void lcd::writeLineAt(lcd_line_t line, uint8_t posn, const char* text)
+{
+    strncpy(lineBuffer, text, 20);
+    this->writeLineAt(line, posn, lineBuffer);
+}
+
+void lcd::writeLineAt(lcd_line_t line, uint8_t posn, char* text)
+{
+    char* c = text;
+    size_t len = strlen(text);
+
+    if (len + posn > MAX_LINE_LENGTH)
+    {
+        len = MAX_LINE_LENGTH - posn;
+    }
+
+    // locate cursor at beginning of line
+    this->sendCmd((uint8_t)line + posn);
+
+    while(len)
+    {
+        this->sendChar(*c);
+        ++c;
+        --len;
+    }
+
+#ifdef DEBUG
+    printf_P(PSTR("LCD writeLineAt(%d, %d, >%s<)\n"), (uint8_t)line, posn, text);
+#endif
+}
+
+void lcd::writeCharAt(lcd_line_t line, uint8_t posn, char c)
+{
+    if (posn > MAX_LINE_LENGTH)
+    {
+        posn = MAX_LINE_LENGTH;
+    }
+
+    this->sendCmd((uint8_t)line + posn);
+    this->sendChar(c);
+
+#ifdef DEBUG
+    printf_P(PSTR("LCD writeCharAt(%d, %d, >%c<)\n"), (uint8_t)line, posn, c);
+#endif
+}
+
 void lcd::init()
 {
     LCD_E_ON();
@@ -27,59 +116,9 @@ void lcd::init()
 
     strncpy(blank, "                    ", 20);
 
-    if (dbg)    printf_P(PSTR("LCD init done\n"));
-}
-
-void lcd::clearAll()
-{
-    this->sendCmd(0x01); // clear the whole thang
-    _delay_ms(1.64);     // This command takes 1.64 ms
-
-    if (dbg)    printf_P(PSTR("LCD total clear done\n"));
-}
-void lcd::clearLine(lcd_line_t line)
-{
-    this->writeLine(line, blank);
-}
-
-void lcd::writeLine(lcd_line_t line, char* text)
-{
-    this->writeLineAt(line, 0, text);
-}
-
-void lcd::writeLineAt(lcd_line_t line, uint8_t posn, char* text)
-{
-    char* c = text;
-    size_t len = strlen(text);
-
-    if (len + posn > MAX_LINE_LENGTH)
-    {
-        len = MAX_LINE_LENGTH - posn;
-    }
-
-    // locate cursor at beginning of line
-    this->sendCmd((uint8_t)line + posn);
-
-    while(len)
-    {
-        this->sendChar(*c);
-        ++c;
-        --len;
-    }
-
-    printf_P(PSTR("writeLineAt(%d, %d, >%s<)\n"), (uint8_t)line, posn, text);
-}
-void lcd::writeCharAt(lcd_line_t line, uint8_t posn, char c)
-{
-    if (posn > MAX_LINE_LENGTH)
-    {
-        posn = MAX_LINE_LENGTH;
-    }
-
-    this->sendCmd((uint8_t)line + posn);
-    this->sendChar(c);
-
-    printf_P(PSTR("writeCharAt(%d, %d, >%c<)\n"), (uint8_t)line, posn, c);
+#ifdef DEBUG
+    printf_P(PSTR("LCD init done\n"));
+#endif
 }
 
 void lcd::writeByte(uint8_t b)

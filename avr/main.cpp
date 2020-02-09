@@ -1,6 +1,7 @@
 /*
  */
 #include "project.h"
+#include "lcd/lcd.h"
 
 // Assign stdin and stdout streams to our functions that handle serial port
 //static FILE usart0stdio = FDEV_SETUP_STREAM(USART0SendByte, USART0ReceiveByte, _FDEV_SETUP_RW);
@@ -22,20 +23,25 @@ int main(void)
     uart_str.flags = _FDEV_SETUP_RW;
     
     stdout = stdin = &uart_str;
-
-
-
-    //stdin=stdout=&usart0stdio; 
     
+    lcd* display = lcd::getInstance();
+
     setupIO();
     setupTimer2();
     initEEPROM(); 
     printf_P(PSTR("\r\nAVR Metronome %ld\r\n\r\n"), xConfig.resetCount);  
+    display->clearAll();
+
 
     setupWatchdog();
     sei();
 
     printf_P(PSTR("Starting metronome main loop\r\n"));
+
+    char stuff[21];
+    strncpy(stuff, "This is a ram string", 20);
+    display->writeLine(LINE_1, stuff);
+    display->writeLine(LINE_2, "This is another line");
 
     uint16_t blinkyTimer = 0;
 

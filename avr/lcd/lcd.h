@@ -14,21 +14,26 @@ enum lcd_line_t
 class lcd
 {
 public: 
-    lcd(bool debug = false) : dbg(debug) {}
-    virtual ~lcd() {}
-
-    void init();
+    static lcd* getInstance();
 
     void clearAll();
     void clearLine(lcd_line_t line);
 
     void writeLine(lcd_line_t line, char* text);
     void writeLineAt(lcd_line_t line, uint8_t posn, char* text);
+    void writeLine(lcd_line_t line, const char* text);
+    void writeLineAt(lcd_line_t line, uint8_t posn, const char* text);
     void writeCharAt(lcd_line_t line, uint8_t posn, char c);
 
 private:
-    bool dbg;
+    lcd(bool debug = false) {}
+    virtual ~lcd() {}
+    static lcd* _inst;
+
     char blank[20];
+    char lineBuffer[21];
+
+    void init();
     void writeByte(uint8_t b);
     void sendChar(char c);
     void sendCmd(uint8_t cmd);
