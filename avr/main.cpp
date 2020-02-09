@@ -16,9 +16,7 @@
 #include "lcd/lcd.h"
 #include "string/LEDString.h"
 #include "buttons/buttons.h"
-
-// Assign stdin and stdout streams to our functions that handle serial port
-//static FILE usart0stdio = FDEV_SETUP_STREAM(USART0SendByte, USART0ReceiveByte, _FDEV_SETUP_RW);
+#include "ui/ui.h"
 
 static volatile uint8_t isrMilliseconds = 0;
 static volatile uint8_t isrLastMilleseconds = 0;
@@ -31,33 +29,39 @@ int main(void)
 
     cfgSerial(S_BAUD_115200, S_FORMAT_8N1);
 
+    // set stdin and stdout to go through the serial port
     FILE uart_str; 
     uart_str.put = USART0SendByte;
     uart_str.get = USART0ReceiveByte;
     uart_str.flags = _FDEV_SETUP_RW;
-    
     stdout = stdin = &uart_str;
     
+    // singleton instance of LCD handler,
+    // LED string, and pushbutton handler classes
     lcd* display = lcd::getInstance();
     LEDString* string = LEDString::getInstance();
-    buttons* intfc = buttons::getInstance();
+    buttons* hdwr = buttons::getInstance();
 
+    // user interface drives it all
+    ui interface;
+
+    // init hardware
     setupIO();
     setupTimer2();
     initEEPROM(); 
-    printf_P(PSTR("\r\nAVR Metronome %ld\r\n\r\n"), xConfig.resetCount);  
     display->clearAll();
-
 
     setupWatchdog();
     sei();
 
+#ifdef DEBUG
     printf_P(PSTR("Starting metronome main loop\r\n"));
 
     char stuff[21];
     strncpy(stuff, "This is a ram string", 20);
     display->writeLine(LINE_1, stuff);
     display->writeLine(LINE_2, "This is another line");
+#endif
 
     uint16_t blinkyTimer = 0;
 
@@ -82,7 +86,7 @@ int main(void)
 
             case 1:
             {
-                intfc->update();
+                hdwr->update();
             }  break;
             
             case 2:
@@ -92,6 +96,11 @@ int main(void)
             
             case 3:
             {
+                interface.update();
+
+                if (interface.stopAll())                string->stop();
+                else if (interface.startMetronome())    string->start(interface.getBPM());
+                else if (interface.startPretty())       string->pretty();
 
             }  break;
         }

@@ -8,6 +8,11 @@
 extern uint32_t milliseconds;
 
 /*********************************************
+* Number of LEDS in the metronome string
+**********************************************/
+#define STRING_LENGTH   10
+
+/*********************************************
 * Number of tasks, and by definition, interval
 * in MS between task iterations
 **********************************************/
