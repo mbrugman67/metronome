@@ -1,6 +1,8 @@
 #ifndef _SERIAL_PRINTF_
 #define _SERIAL_PRINTF_
 
+#include <avr/io.h>
+
 #define     S_BAUD_2400     1
 #define     S_BAUD_9600     2
 #define     S_BAUD_19200    3

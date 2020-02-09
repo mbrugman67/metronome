@@ -1,6 +1,17 @@
 /*
  */
+#include <stdio.h>
+#include <string.h>
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/wdt.h>
+#include <avr/pgmspace.h>
+
 #include "project.h"
+#include "sys/hardware.h"
+#include "sys/eeprom.h"
+#include "sys/serialPrintf.h"
 #include "lcd/lcd.h"
 
 // Assign stdin and stdout streams to our functions that handle serial port

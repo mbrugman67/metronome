@@ -1,4 +1,11 @@
-#include "../project.h"
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+#include <avr/io.h>
+#include <avr/eeprom.h>
+
+#include "eeprom.h"
 
 #define EEPROM_SIGNATURE_WORD   0x54fa
 

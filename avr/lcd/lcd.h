@@ -2,7 +2,9 @@
 #define LCD_H_
 
 #include <util/delay.h>
+
 #include "../project.h"
+#include "../sys/ioDefinitions.h"
 
 enum lcd_line_t
 {

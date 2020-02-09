@@ -1,6 +1,8 @@
 #ifndef _EEPROM_H_
 #define _EEPROM_H_
 
+#include <stdint.h>
+
 // variable addresses (all values are word size)
 struct CONFIG
 {

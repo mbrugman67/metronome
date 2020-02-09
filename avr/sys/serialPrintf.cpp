@@ -1,4 +1,8 @@
+#include <stdlib.h>
+#include <stdio.h>
+
 #include "../project.h"
+#include "serialPrintf.h"
 
 int USART0SendByte(char c, FILE *stream)
 {

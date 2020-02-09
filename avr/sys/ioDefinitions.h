@@ -1,6 +1,9 @@
 #ifndef IO_DEF_H_
 #define IO_DEF_H_
 
+#include <avr/io.h>
+#include "../project.h"
+
 // Map pins on RedBoard to ATMega328 I/O port/pin
 // RedBoard pins AD0 to AD5 are on port c
 #define PIN_AD0_ON()        (SETBIT(PORTC, PORTC0))
@@ -133,6 +136,12 @@
 #define LED_L_TGL()         PIN_IO13_TGL()
 #define LED_L_SET(x)        PIN_IO13_SET(x)
 #define LED_L_GET()         PIN_IO13_GET()   
+
+// buttons
+#define MENU_BUTTON()       PIN_IO8_GET()
+#define UP_BUTTON()         PIN_IO9_GET()
+#define DOWN_BUTTON()       PIN_IO10_GET()
+#define ENTER_BUTTON()      PIN_IO11_GET()
 
 // The LCD pins
 #define LCD_RS_ON()         PIN_AD0_ON()

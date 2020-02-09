@@ -1,3 +1,6 @@
+#include <avr/io.h>
+#include <avr/wdt.h>
+
 #include "../project.h"
 #include "../lcd/lcd.h"
 

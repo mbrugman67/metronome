@@ -1,3 +1,10 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+
+#include <avr/pgmspace.h>
+
 #include "lcd.h"
 #include "../sys/ioDefinitions.h"
 
