@@ -13,12 +13,12 @@ void setupIO(void)
 {
     // set as outputs initially; these are the
     // LCD lines
-    DDRC = 0b00111111;
+    DDRC = 0x3f;
     PORTC = 0x00;
 
     // pins 0 to 3 on portb are inputs (buttons)
-    DDRB = 0b00000000;
-    PORTB = 0xff;
+    DDRB = 0x20;
+    PORTB = 0xdf;
 
     // pins 0 and 1 are serial port
     DDRD = 0b00111100;

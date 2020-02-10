@@ -30,7 +30,7 @@
 #define PIN_AD3_SET(x)      if(x){SETBIT(PORTC, PORTC3);} else {CLRBIT(PORTC, PORTC3);}
 #define PIN_AD3_GET()       (GETBIT(PINC, PORTC3))
 
-#define PIN_AD4_ON()        (SETBIT(PORTC, PORTC4))PORTD
+#define PIN_AD4_ON()        (SETBIT(PORTC, PORTC4))
 #define PIN_AD4_OFF()       (CLRBIT(PORTC, PORTC4))
 #define PIN_AD4_TGL()       (SETBIT(PINC, PORTC4))
 #define PIN_AD4_SET(x)      if(x){SETBIT(PORTC, PORTC4);} else {CLRBIT(PORTC, PORTC4);}
@@ -96,37 +96,37 @@
 // NOTE = this is the ICP pin
 #define PIN_IO8_ON()        (SETBIT(PORTB, PORTB0))
 #define PIN_IO8_OFF()       (CLRBIT(PORTB, PORTB0))
-#define PIN_IO8_TGL()       (SETBIT(PIND, PORTB0))
+#define PIN_IO8_TGL()       (SETBIT(PINB, PORTB0))
 #define PIN_IO8_SET(x)      if(x){SETBIT(PORTB, PORTB0);} else {CLRBIT(PORTB, PORTB0);}
 #define PIN_IO8_GET()       (GETBIT(PINB, PORTB0))
 
 #define PIN_IO9_ON()        (SETBIT(PORTB, PORTB1))
 #define PIN_IO9_OFF()       (CLRBIT(PORTB, PORTB1))
-#define PIN_IO9_TGL()       (SETBIT(PIND, PORTB1))
+#define PIN_IO9_TGL()       (SETBIT(PINB, PORTB1))
 #define PIN_IO9_SET(x)      if(x){SETBIT(PORTB, PORTB1);} else {CLRBIT(PORTB, PORTB1);}
 #define PIN_IO9_GET()       (GETBIT(PINB, PORTB1))
 
 #define PIN_IO10_ON()        (SETBIT(PORTB, PORTB2))
 #define PIN_IO10_OFF()       (CLRBIT(PORTB, PORTB2))
-#define PIN_IO10_TGL()       (SETBIT(PIND, PORTB2))
+#define PIN_IO10_TGL()       (SETBIT(PINB, PORTB2))
 #define PIN_IO10_SET(x)      if(x){SETBIT(PORTB, PORTB2);} else {CLRBIT(PORTB, PORTB2);}
 #define PIN_IO10_GET()       (GETBIT(PINB, PORTB2))
 
 #define PIN_IO11_ON()        (SETBIT(PORTB, PORTB3))
 #define PIN_IO11_OFF()       (CLRBIT(PORTB, PORTB3))
-#define PIN_IO11_TGL()       (SETBIT(PIND, PORTB3))
+#define PIN_IO11_TGL()       (SETBIT(PINB, PORTB3))
 #define PIN_IO11_SET(x)      if(x){SETBIT(PORTB, PORTB3);} else {CLRBIT(PORTB, PORTB3);}
 #define PIN_IO11_GET()       (GETBIT(PINB, PORTB3))
 
 #define PIN_IO12_ON()        (SETBIT(PORTB, PORTB4))
 #define PIN_IO12_OFF()       (CLRBIT(PORTB, PORTB4))
-#define PIN_IO12_TGL()       (SETBIT(PIND, PORTB4))
+#define PIN_IO12_TGL()       (SETBIT(PINB, PORTB4))
 #define PIN_IO12_SET(x)      if(x){SETBIT(PORTB, PORTB4);} else {CLRBIT(PORTB, PORTB4);}
 #define PIN_IO12_GET()       (GETBIT(PINB, PORTB4))
 
 #define PIN_IO13_ON()        (SETBIT(PORTB, PORTB5))
 #define PIN_IO13_OFF()       (CLRBIT(PORTB, PORTB5))
-#define PIN_IO13_TGL()       (SETBIT(PIND, PORTB5))
+#define PIN_IO13_TGL()       (SETBIT(PINB, PORTB5))
 #define PIN_IO13_SET(x)      if(x){SETBIT(PORTB, PORTB5);} else {CLRBIT(PORTB, PORTB5);}
 #define PIN_IO13_GET()       (GETBIT(PINB, PORTB5))
 

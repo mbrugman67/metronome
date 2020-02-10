@@ -72,13 +72,16 @@ int main(void)
             case 0:
             {
                 ++blinkyTimer;
-                if (LED_L_GET() && blinkyTimer >= (666 / TASK_INTERVAL))
+                if (blinkyTimer < (667 / TASK_INTERVAL))
                 {
-                    LED_L_OFF();
-                    blinkyTimer = 0;
-                } else if (!LED_L_GET() && blinkyTimer >= (333 / TASK_INTERVAL))
+                    LED_L_SET(true);
+                }
+                else if (blinkyTimer < (1000 / TASK_INTERVAL))
                 {
-                    LED_L_ON();
+                    LED_L_SET(false);
+                }
+                else
+                {
                     blinkyTimer = 0;
                 }
 

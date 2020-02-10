@@ -22,7 +22,7 @@ extern uint32_t milliseconds;
 #define false   0
 
 #ifndef BIT
-#define BIT(x) 1U << x
+#define BIT(x) (1u << x)
 #endif
 
 #ifndef SETBIT
