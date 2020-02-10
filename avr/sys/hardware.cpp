@@ -16,8 +16,9 @@ void setupIO(void)
     DDRC = 0b00111111;
     PORTC = 0x00;
 
-    DDRB = 0b11111111;
-    PORTB = 0x00;
+    // pins 0 to 3 on portb are inputs (buttons)
+    DDRB = 0b00000000;
+    PORTB = 0xff;
 
     // pins 0 and 1 are serial port
     DDRD = 0b00111100;

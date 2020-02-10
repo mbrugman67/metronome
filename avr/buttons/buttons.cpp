@@ -4,18 +4,15 @@
 #include "buttons.h"
 #include "../project.h"
 
+#ifdef DEBUG
+#include <stdio.h>
+#include <avr/pgmspace.h>
+#endif
+
 #define DEBOUNCE_TIME   20 / (TASK_INTERVAL)
 #define HOLD_TIME       500 / (TASK_INTERVAL)
 
 buttons* buttons::_inst = NULL;
-bool buttons::up = false;
-bool buttons::upHeld = false;
-bool buttons::menu = false;
-bool buttons::menuHeld = false;
-bool buttons::down = false;
-bool buttons::downHeld = false;
-bool buttons::enter = false;
-bool buttons::enterHeld = false;
 
 buttons* buttons::getInstance()
 {
@@ -29,76 +26,107 @@ buttons* buttons::getInstance()
 
 void buttons::update()
 {
-    ++menuTime;
-    ++upTime;
-    ++downTime;
-    ++enterTime;
+#ifdef DEBUG
+    static button_t last;
+    if (last.menu != btns.menu)
+    {
+        printf_P(PSTR("Menu button from %s to %s\n"),
+            this->buttonStateToText(last.menu),
+            this->buttonStateToText(btns.menu));
+        
+        last.menu = btns.menu;
+    }
+
+    if (last.up != btns.up)
+    {
+        printf_P(PSTR("Up button from %s to %s\n"),
+            this->buttonStateToText(last.up),
+            this->buttonStateToText(btns.up));
+
+        last.up = btns.up;
+    }    
+
+    if (last.down != btns.down)
+    {
+        printf_P(PSTR("Down button from %s to %s\n"),
+            this->buttonStateToText(last.down),
+            this->buttonStateToText(btns.down));
+
+        last.down = btns.down;
+    }    
+
+    if (last.enter != btns.enter)
+    {
+        printf_P(PSTR("Enter button from %s to %s\n"),
+            this->buttonStateToText(last.enter),
+            this->buttonStateToText(btns.enter));
+
+        last.enter = btns.enter;
+    }    
+#endif
+
+    ++btns.menuTime;
+    ++btns.upTime;
+    ++btns.downTime;
+    ++btns.enterTime;
     
-    if (!MENU_BUTTON())
+    if (MENU_BUTTON())
     {
-        menuTime = 0;
-        menu = false;
-        menuHeld = false;
+        btns.menuTime = 0;
+        btns.menu = BUTTON_OFF;
     } 
-    else if (menuTime > HOLD_TIME)
+    else if (btns.menuTime > HOLD_TIME)
     {
-        menuTime = HOLD_TIME + 1;
-        menu = false;
-        menuHeld = true;
+        btns.menuTime = HOLD_TIME + 1;
+        btns.menu = BUTTON_HELD;
     }
-    else if (menuTime > DEBOUNCE_TIME)
+    else if (btns.menuTime > DEBOUNCE_TIME)
     {
-        menu = true;
+        btns.menu = BUTTON_DOWN;
     }
     
-    if (!UP_BUTTON())
+    if (UP_BUTTON())
     {
-        upTime = 0;
-        up = false;
-        upHeld = false;
+        btns.upTime = 0;
+        btns.up = BUTTON_OFF;
     } 
-    else if (upTime > HOLD_TIME)
+    else if (btns.upTime > HOLD_TIME)
     {
-        upTime = HOLD_TIME + 1;
-        up = false;
-        upHeld = true;
+        btns.upTime = HOLD_TIME + 1;
+        btns.up = BUTTON_HELD;
     }
-    else if (upTime > DEBOUNCE_TIME)
+    else if (btns.upTime > DEBOUNCE_TIME)
     {
-        up = true;
+        btns.up = BUTTON_DOWN;
     }
     
-    if (!DOWN_BUTTON())
+    if (DOWN_BUTTON())
     {
-        downTime = 0;
-        down = false;
-        downHeld = false;
+        btns.downTime = 0;
+        btns.down = BUTTON_OFF;
     } 
-    else if (downTime > HOLD_TIME)
+    else if (btns.downTime > HOLD_TIME)
     {
-        downTime = HOLD_TIME + 1;
-        down = false;
-        downHeld = true;
+        btns.downTime = HOLD_TIME + 1;
+        btns.down = BUTTON_HELD;
     }
-    else if (downTime > DEBOUNCE_TIME)
+    else if (btns.downTime > DEBOUNCE_TIME)
     {
-        down = true;
+        btns.down = BUTTON_DOWN;
     }
     
-    if (!MENU_BUTTON())
+    if (ENTER_BUTTON())
     {
-        menuTime = 0;
-        menu = false;
-        menuHeld = false;
+        btns.enterTime = 0;
+        btns.enter = BUTTON_OFF;
     } 
-    else if (menuTime > HOLD_TIME)
+    else if (btns.enterTime > HOLD_TIME)
     {
-        menuTime = HOLD_TIME + 1;
-        menu = false;
-        menuHeld = true;
+        btns.enterTime = HOLD_TIME + 1;
+        btns.enter = BUTTON_HELD;
     }
-    else if (menuTime > DEBOUNCE_TIME)
+    else if (btns.enterTime > DEBOUNCE_TIME)
     {
-        menu = true;
+        btns.enter = BUTTON_DOWN;
     }
 }

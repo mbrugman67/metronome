@@ -143,7 +143,7 @@ void LEDString::update()
 
 
 
-    cli();
-    leds.sync();
-    sei();
+    //cli();
+    //leds.sync();
+    //sei();
 }

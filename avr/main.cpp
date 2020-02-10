@@ -39,7 +39,7 @@ int main(void)
     // singleton instance of LCD handler,
     // LED string, and pushbutton handler classes
     lcd* display = lcd::getInstance();
-    LEDString* string = LEDString::getInstance();
+    //LEDString* string = LEDString::getInstance();
     buttons* hdwr = buttons::getInstance();
 
     // user interface drives it all
@@ -91,16 +91,16 @@ int main(void)
             
             case 2:
             {
-                string->update();
+                //string->update();
             }  break;
             
             case 3:
             {
-                interface.update();
+                //interface.update();
 
-                if (interface.stopAll())                string->stop();
-                else if (interface.startMetronome())    string->start(interface.getBPM());
-                else if (interface.startPretty())       string->pretty();
+                //if (interface.stopAll())                string->stop();
+                //else if (interface.startMetronome())    string->start(interface.getBPM());
+                //else if (interface.startPretty())       string->pretty();
 
             }  break;
         }
