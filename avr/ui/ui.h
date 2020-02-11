@@ -1,3 +1,13 @@
+/***************************************************
+ * file: ui.h
+ ***************************************************
+ * Class to handle user input and output.
+ * Inputs are in the form of button presses, output
+ * is to a 4x20 LCD.
+ * 
+ * The whole thing is menu driven; this class does
+ * that and reports state out
+ **************************************************/
 #ifndef UI_H_
 #define UI_H_
 

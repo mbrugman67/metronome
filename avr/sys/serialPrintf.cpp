@@ -1,9 +1,23 @@
+/***************************************************
+ * file: serialPrintf.cpp
+ ***************************************************
+ * Use the serial port for debugging.  STDIN and 
+ * STDOUT will be mapped to serial functions for 
+ * printf() and such
+ **************************************************/
 #include <stdlib.h>
 #include <stdio.h>
 
 #include "../project.h"
 #include "serialPrintf.h"
 
+/***************************************************
+ * USART0SendByte()
+ ***************************************************
+ * Send a single byte out the serial port.  
+ * There is a reference to a FILE pointer; this is
+ * needed to use this function for STDOUT
+ **************************************************/
 int USART0SendByte(char c, FILE *stream)
 {
     while(!GETBIT(UCSR0A, UDRE0));
@@ -12,6 +26,13 @@ int USART0SendByte(char c, FILE *stream)
     return 0;
 }
 
+/***************************************************
+ * USART0ReceiveByte()
+ ***************************************************
+ * Read a single byte in from the serial port.  
+ * There is a reference to a FILE pointer; this is
+ * needed to use this function for STDIN
+ **************************************************/
 int USART0ReceiveByte(FILE *stream)
 {
     uint8_t c;

@@ -44,6 +44,7 @@ int main(void)
 
     // user interface drives it all
     ui interface;
+    interface.init();
 
     // init hardware
     setupIO();
@@ -59,8 +60,7 @@ int main(void)
 
     char stuff[21];
     strncpy(stuff, "This is a ram string", 20);
-    display->writeLine(LINE_1, stuff);
-    display->writeLine(LINE_2, "This is another line");
+    display->writeLineAt(LINE_2, 3, stuff);
 #endif
 
     uint16_t blinkyTimer = 0;
@@ -111,11 +111,14 @@ int main(void)
         ++taskNum;
         taskNum %= TASK_INTERVAL;
 
+        // do busy stuff in the dead time between the end of one
+        // task and the start of the next
         while (isrMilliseconds == isrLastMilleseconds)
         {
             // busy
         }
 
+        // global millisecond counter
         uint8_t incr = isrMilliseconds - isrLastMilleseconds;
         isrLastMilleseconds = isrMilliseconds;
         milliseconds += (uint32_t)(incr) & 0xff;

@@ -1,11 +1,27 @@
+/***************************************************
+ * file: ioDefinitions.h
+ ***************************************************
+ * Friendly names for the I/O points.  For each 
+ * point there are macros for
+ * ON() - set to on state
+ * OFF() - set to off state
+ * TGL() - toggle output state
+ * SET(x) - set to on/off as commanded
+ * GET() - get the input state
+ * 
+ * The first set of macros use the name of the 
+ * I/O point as stenciled on the board.
+ * 
+ * If they are used in the project, there are
+ * macros that have a functional name below
+ **************************************************/
 #ifndef IO_DEF_H_
 #define IO_DEF_H_
 
 #include <avr/io.h>
 #include "../project.h"
 
-// Map pins on RedBoard to ATMega328 I/O port/pin
-// RedBoard pins AD0 to AD5 are on port c
+// pins AD0 to AD5 are on port C
 #define PIN_AD0_ON()        (SETBIT(PORTC, PORTC0))
 #define PIN_AD0_OFF()       (CLRBIT(PORTC, PORTC0))
 #define PIN_AD0_TGL()       (SETBIT(PINC, PORTC0))
@@ -93,7 +109,7 @@
 #define PIN_IO7_SET(x)      if(x){SETBIT(PORTD, PORTD7);} else {CLRBIT(PORTD, PORTD7);}
 #define PIN_IO7_GET()       (GETBIT(PIND, PORTD7))
 
-// NOTE = this is the ICP pin
+// pins 8 to 13 are port D
 #define PIN_IO8_ON()        (SETBIT(PORTB, PORTB0))
 #define PIN_IO8_OFF()       (CLRBIT(PORTB, PORTB0))
 #define PIN_IO8_TGL()       (SETBIT(PINB, PORTB0))
@@ -130,6 +146,9 @@
 #define PIN_IO13_SET(x)      if(x){SETBIT(PORTB, PORTB5);} else {CLRBIT(PORTB, PORTB5);}
 #define PIN_IO13_GET()       (GETBIT(PINB, PORTB5))
 
+/************************************************
+ * Application-specific I/O macros
+ ***********************************************/
 // The "L" LED on the board
 #define LED_L_ON()          PIN_IO13_ON()
 #define LED_L_OFF()         PIN_IO13_OFF()

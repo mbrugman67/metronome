@@ -1,3 +1,13 @@
+/***************************************************
+ * file: ui.cpp
+ ***************************************************
+ * Class to handle user input and output.
+ * Inputs are in the form of button presses, output
+ * is to a 4x20 LCD.
+ * 
+ * The whole thing is menu driven; this class does
+ * that and reports state out
+ **************************************************/
 #include "ui.h"
 
 #ifdef DEBUG
@@ -5,6 +15,12 @@
 #include <avr/pgmspace.h>
 #endif
 
+/****************************************
+ * init()
+ ****************************************
+ * Set up local variables, get ready to
+ * accept input
+ ***************************************/
 void ui::init()
 {
     bpm = 60;
@@ -38,6 +54,12 @@ void ui::sateStartPretty()
 }
 
 
+/****************************************
+ * update()
+ ****************************************
+ * Should be called exactly once per
+ * task interval
+ ***************************************/
 void ui::update()
 {
 #ifdef DEBUG

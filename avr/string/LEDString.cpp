@@ -126,6 +126,8 @@ void LEDString::pattern()
 
 void LEDString::update()
 {
+    ++tickCount;
+    
     if (running)
     {
         this->metronome();
@@ -139,10 +141,6 @@ void LEDString::update()
         this->clear();
     }
     
-
-
-
-
     //cli();
     //leds.sync();
     //sei();

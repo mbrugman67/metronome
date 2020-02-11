@@ -1,4 +1,21 @@
-
+/***************************************************
+ * file: buttons.cpp
+ ***************************************************
+ * handle hardware buttons.  Buttons may be in 
+ * one of 3 possible states:
+ *  BUTTON_OFF - button is release
+ *  BUTTON_DOWN - button has been pressed
+ *  BUTTON_HELD - button has been held down
+ * 
+ * There are four buttons:
+ *  Menu
+ *  Up Arrow
+ *  Down Arrow
+ *  Enter
+ * 
+ * This class handles those things, plus debounce 
+ * for the "down" state
+ **************************************************/
 #include <stdlib.h>
 
 #include "buttons.h"
@@ -9,11 +26,21 @@
 #include <avr/pgmspace.h>
 #endif
 
+// debounce and "HOLD" time in milliseconds, converted
+// to task update intervals
 #define DEBOUNCE_TIME   20 / (TASK_INTERVAL)
 #define HOLD_TIME       500 / (TASK_INTERVAL)
 
+// singleton instance
 buttons* buttons::_inst = NULL;
 
+/************************************************
+ * getInstance()
+ ************************************************
+ * return an pointer to the single instance
+ * of this class.  If it hasn't been instantiated
+ * yet, do it now.  
+ ***********************************************/ 
 buttons* buttons::getInstance()
 {
     if (!_inst)
@@ -24,6 +51,12 @@ buttons* buttons::getInstance()
     return (_inst);
 }
 
+/************************************************
+ * update()
+ ************************************************
+ * handle the I/O for all 4 buttons.  This needs
+ * to happen exactly once per task interval  
+ ***********************************************/ 
 void buttons::update()
 {
 #ifdef DEBUG
@@ -65,11 +98,26 @@ void buttons::update()
     }    
 #endif
 
+    // increment all the timers
     ++btns.menuTime;
     ++btns.upTime;
     ++btns.downTime;
     ++btns.enterTime;
     
+    /****************************************
+     * general comments that apply to all 4:
+     ****************************************
+     * each button input has a pull-up and
+     * is driven to ground when pressed, so
+     * an "high" value mean button input is
+     * off.  If off, clear the down time and 
+     * set that state.
+     * 
+     * If pressed for greater than the debounce
+     * time but less than hold time, then button
+     * is "down".  Once held continuously for
+     * the hold time, it is held
+     ***************************************/
     if (MENU_BUTTON())
     {
         btns.menuTime = 0;
@@ -77,6 +125,11 @@ void buttons::update()
     } 
     else if (btns.menuTime > HOLD_TIME)
     {
+        // set the on time to be held time
+        // plus one.  The problem would be
+        // if held for a long time, the integer
+        // will rollover and we'll get an 
+        // unwanted "up" and "down" event
         btns.menuTime = HOLD_TIME + 1;
         btns.menu = BUTTON_HELD;
     }

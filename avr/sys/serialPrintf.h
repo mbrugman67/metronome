@@ -1,3 +1,10 @@
+/***************************************************
+ * file: serialPrintf.h
+ ***************************************************
+ * Use the serial port for debugging.  STDIN and 
+ * STDOUT will be mapped to serial functions for 
+ * printf() and such
+ **************************************************/
 #ifndef _SERIAL_PRINTF_
 #define _SERIAL_PRINTF_
 

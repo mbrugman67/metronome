@@ -36,6 +36,7 @@ private:
     char lineBuffer[21];
 
     void init();
+    void writeNibble(uint8_t b);
     void writeByte(uint8_t b);
     void sendChar(char c);
     void sendCmd(uint8_t cmd);
@@ -43,8 +44,9 @@ private:
     inline void toggleELine()
     {
         LCD_E_OFF();
-        _delay_us(40);
+        _delay_us(60);
         LCD_E_ON();
+        _delay_us(5);
     }
 };
 

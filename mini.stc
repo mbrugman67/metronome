@@ -58,4 +58,4 @@ TXPacketSize = 256
 ViewerMode = Plain
 AutoConnect = false
 AutoDisconnect = false
-WindowPosition = 41,106,688,480
+WindowPosition = 41,110,688,480

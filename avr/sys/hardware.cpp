@@ -1,19 +1,23 @@
+/***************************************************
+ * file: hardware.cpp
+ ***************************************************
+ * Init functions for hardware
+ **************************************************/
 #include <avr/io.h>
 #include <avr/wdt.h>
 
 #include "../project.h"
-#include "../lcd/lcd.h"
 
 /***************************************
 * setupIO()
 ****************************************
-* All outputs
+* All I/O points
 ***************************************/
 void setupIO(void)
 {
     // set as outputs initially; these are the
     // LCD lines
-    DDRC = 0x3f;
+    DDRC = 0xff;
     PORTC = 0x00;
 
     // pins 0 to 3 on portb are inputs (buttons)
@@ -55,9 +59,4 @@ void setupTimer2(void)
     
     // enable interrupt on A
     TIMSK2 = BIT(OCIE2A);
-
-    lcd* another = lcd::getInstance();
-    another->writeCharAt(LINE_3, 12, 'f');
-    another->writeLineAt(LINE_4, 13, "heynow");
-      
 }
