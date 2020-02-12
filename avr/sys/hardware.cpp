@@ -18,7 +18,7 @@ void setupIO(void)
     // set as outputs initially; these are the
     // LCD lines
     DDRC = 0xff;
-    PORTC = 0x00;
+    PORTC = 0x02;
 
     // pins 0 to 3 on portb are inputs (buttons)
     DDRB = 0x20;
@@ -39,6 +39,25 @@ void setupWatchdog(void)
     WDTCSR = BIT(WDCE);
     WDTCSR = BIT(WDP3) | BIT(WDP0);
     wdt_reset();
+}
+
+/*******************************************
+* setupTimer1()
+********************************************
+* PWM timer, frequency of 20KHz
+********************************************/
+void setupTimer1(void)
+{
+    TCCR1A = 0;
+    TCCR1C = 0;
+
+    // count of 100, prescaler 8 means interval of .05 ms
+    OCR1A = 100;
+
+    // WGM mode CTC, prescaler of 8
+    TCCR1B = (BIT(WGM12) | BIT(CS11));
+
+    TIMSK1 = BIT(OCIE1A);
 }
 
 /***************************************

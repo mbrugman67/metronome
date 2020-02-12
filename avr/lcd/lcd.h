@@ -1,3 +1,10 @@
+/***************************************************
+ * file: lcd.h
+ ***************************************************
+ * handle standard Hitachi-interfaced LCD.  This
+ * particular unit is a 4x20 and will be used in
+ * 4-bit mode
+ **************************************************/
 #ifndef LCD_H_
 #define LCD_H_
 
@@ -5,6 +12,8 @@
 
 #include "../project.h"
 #include "../sys/ioDefinitions.h"
+
+extern volatile uint8_t backlightPWMVal;
 
 enum lcd_line_t
 {
@@ -31,23 +40,15 @@ private:
     lcd(bool debug = false) {}
     virtual ~lcd() {}
     static lcd* _inst;
+    void init();
 
     char blank[20];
     char lineBuffer[21];
 
-    void init();
     void writeNibble(uint8_t b);
     void writeByte(uint8_t b);
     void sendChar(char c);
     void sendCmd(uint8_t cmd);
-
-    inline void toggleELine()
-    {
-        LCD_E_OFF();
-        _delay_us(60);
-        LCD_E_ON();
-        _delay_us(5);
-    }
 };
 
 #endif

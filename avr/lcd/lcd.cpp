@@ -1,25 +1,29 @@
 /***************************************************
- * file: buttons.h
+ * file: lcd.cpp
  ***************************************************
- * handle hardware buttons.  Buttons may be in 
- * one of 3 possible states:
- *  BUTTON_OFF - button is release
- *  BUTTON_DOWN - button has been pressed
- *  BUTTON_HELD - button has been held down
- * 
- * This class handles those things, plus debounce 
- * for the "down" state
+ * handle standard Hitachi-interfaced LCD.  This
+ * particular unit is a 4x20 and will be used in
+ * 4-bit mode
  **************************************************/
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <avr/pgmspace.h>
-#include <avr/wdt.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 
 #include "lcd.h"
 #include "../sys/ioDefinitions.h"
+
+volatile uint8_t backlightPWMVal;
+
+#ifdef DEBUG
+#undef DEBUG
+#endif
+
+#ifdef DEBUG
+#include <stdio.h>
+#include <avr/pgmspace.h>
+#endif
 
 #define MAX_LINE_LENGTH     20
 
@@ -30,6 +34,7 @@ lcd* lcd::getInstance()
     if (!_inst)
     {
         _inst = (lcd*)malloc(sizeof(lcd));
+        backlightPWMVal = 24;
         _inst->init();
     }
 
@@ -48,7 +53,12 @@ void lcd::clearAll()
 
 void lcd::clearLine(lcd_line_t line)
 {
-    this->writeLine(line, blank);
+    this->sendCmd((uint8_t)line);
+
+    for (size_t ii = 0; ii < 10; ++ii)
+    {
+        this->sendChar(0x20);
+    }
 
 #ifdef DEBUG
     printf_P(PSTR("LCD Clear line %d\n"), (uint8_t)line);
@@ -62,8 +72,11 @@ void lcd::writeLine(lcd_line_t line, char* text)
 
 void lcd::writeLine(lcd_line_t line, const char* text)
 {
-    strncpy(lineBuffer, text, 20);
-    this->writeLineAt(line, 0, lineBuffer);
+    for (size_t posn = 0; posn < strlen(text); posn++)
+    {
+        this->sendCmd((uint8_t)line + posn);
+        this->sendChar(text[posn]);
+    }
 }
 
 void lcd::writeLineAt(lcd_line_t line, uint8_t posn, const char* text)
@@ -114,29 +127,31 @@ void lcd::writeCharAt(lcd_line_t line, uint8_t posn, char c)
 
 void lcd::init()
 {
+    LCD_D4_OFF();
+    LCD_D5_OFF();
+    LCD_D6_OFF();
+    LCD_D7_OFF();
     LCD_E_ON();
     LCD_RS_OFF();
 
     // wait for LCD to be sure it's powered up
-    _delay_ms(15);  
-    wdt_reset();
+    _delay_ms(5);  
+    _delay_ms(5);  
+    _delay_ms(5);  
 
     this->writeNibble(0x03);
-    _delay_ms(10);
-    this->writeNibble(0x03);
-    _delay_us(200);
-    this->writeNibble(0x03);
-    _delay_us(80);
+    _delay_ms(5);
+    this->writeNibble(0x03);    //200
+    _delay_ms(5);
+    this->writeNibble(0x03);    // 40
+    _delay_ms(5);
 
     this->writeNibble(0x02);     // 4-bit mode
-    _delay_us(80);    // most instructions take 40us
- 
+    _delay_ms(5);
+
     this->sendCmd(0x28); // Function set 001 BW N F - -
     this->sendCmd(0x0C);
     this->sendCmd(0x14);
-    this->sendCmd(0x01); 
-
-    this->sendCmd(0x08);
 
     strncpy(blank, "                    ", 20);
 
@@ -147,17 +162,19 @@ void lcd::init()
 
 void lcd::writeNibble(uint8_t b)
 {
-    DDRC = 0xff;
+    cli();
+    LCD_E_ON();
+    
     LCD_D4_SET(GETBIT(b, 0));
     LCD_D5_SET(GETBIT(b, 1));
     LCD_D6_SET(GETBIT(b, 2));
     LCD_D7_SET(GETBIT(b, 3));
-    _delay_us(5);
 
-    this->toggleELine();
+    _delay_us(20);
 
-    _delay_us(40);
-
+    LCD_E_OFF();
+    _delay_us(50);
+    sei();
 #ifdef DEBUG
     printf_P(PSTR("lcd::writeNibble(0x%x), RS %c e %c 0x%x\n"), 
         b & 0x0f, 
@@ -187,4 +204,23 @@ void lcd::sendCmd(uint8_t cmd)
 {
     LCD_RS_OFF();
     this->writeByte(cmd);
+}
+
+/*****************************************************
+* PWM timer, every .04ms
+*****************************************************/
+ISR(TIMER1_COMPA_vect, ISR_BLOCK) 
+{
+    static volatile uint8_t count = 0; 
+    ++count;
+
+    if (count < backlightPWMVal)
+    {
+        PIN_IO3_ON();
+    }
+    else
+    {
+        PIN_IO3_OFF();
+    }
+    
 }

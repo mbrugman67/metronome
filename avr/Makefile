@@ -21,7 +21,7 @@ OBJDIR=./obj/
 OUTDIR=./bin/
 TARGET=$(OUTDIR)metronome
 
-CFLAGS=-Wall -mmcu=atmega328p -DF_CPU=16000000UL -Os -DLITTLE_ENDIAN -Os -I$(AVR_INCL_DIR)
+CFLAGS=-Wall -mmcu=atmega328p -DF_CPU=16000000UL -DLITTLE_ENDIAN -Os -I$(AVR_INCL_DIR)
 CFLAGS+=-funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -ffunction-sections -fdata-sections
 CFLAGS+=-DDEBUG
 

@@ -9,5 +9,6 @@
 void setupIO(void);
 void setupWatchdog(void);
 void setupTimer2(void);
+void setupTimer1(void);
 
 #endif // define _HARDWARE_C_

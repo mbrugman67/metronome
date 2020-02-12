@@ -2,7 +2,6 @@
  */
 #include <stdio.h>
 #include <string.h>
-
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
@@ -35,12 +34,6 @@ int main(void)
     uart_str.get = USART0ReceiveByte;
     uart_str.flags = _FDEV_SETUP_RW;
     stdout = stdin = &uart_str;
-    
-    // singleton instance of LCD handler,
-    // LED string, and pushbutton handler classes
-    lcd* display = lcd::getInstance();
-    //LEDString* string = LEDString::getInstance();
-    buttons* hdwr = buttons::getInstance();
 
     // user interface drives it all
     ui interface;
@@ -48,9 +41,21 @@ int main(void)
 
     // init hardware
     setupIO();
+    setupTimer1();
     setupTimer2();
     initEEPROM(); 
+    
+    // singleton instance of LCD handler,
+    // LED string, and pushbutton handler classes
+    lcd* display = lcd::getInstance();
+    //LEDString* string = LEDString::getInstance();
+    buttons* hdwr = buttons::getInstance();
+
     display->clearAll();
+    //display->clearLine(LINE_1);
+    //display->clearLine(LINE_2);
+    //display->clearLine(LINE_3);
+    //display->clearLine(LINE_4);
 
     setupWatchdog();
     sei();
@@ -58,9 +63,15 @@ int main(void)
 #ifdef DEBUG
     printf_P(PSTR("Starting metronome main loop\r\n"));
 
-    char stuff[21];
-    strncpy(stuff, "This is a ram string", 20);
-    display->writeLineAt(LINE_2, 3, stuff);
+    //char stuff[21];
+    //strncpy(stuff, "Well, fuck me.", 20);
+    //display->writeLineAt(LINE_2, 3, stuff);
+    //                          00000000011111111112
+    //                          12345678901234567890
+    display->writeLine(LINE_1, "Stuff on line 1     ");
+    display->writeLine(LINE_2, "  Hi Sweetie! ;)    ");
+    display->writeLine(LINE_3, "   Stuff on line 3  ");
+    display->writeLine(LINE_4, "    Stuff on line 4 ");
 #endif
 
     uint16_t blinkyTimer = 0;
@@ -135,4 +146,5 @@ int main(void)
 ISR(TIMER2_COMPA_vect, ISR_BLOCK)
 {
     ++isrMilliseconds;
+    PIN_IO2_TGL();
 }
