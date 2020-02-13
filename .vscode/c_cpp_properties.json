@@ -5,6 +5,11 @@
             "includePath": [
                 "${workspaceRoot}",
                 "/Users/matty/projects/avrCrypto/avr",
+                "/Users/matty/projects/avrCrypto/avr/sys",
+                "/Users/matty/projects/avrCrypto/avr/lcd",
+                "/Users/matty/projects/avrCrypto/avr/buttons",
+                "/Users/matty/projects/avrCrypto/avr/string",
+                "/Users/matty/projects/avrCrypto/avr/ui",
                 "/usr/local/homebrew/Cellar/avr-gcc/7.2.0/avr/include",
                 "/usr/local/homebrew/Cellar/avr-gcc/7.2.0/avr/include/avr"
             ],
@@ -13,6 +18,11 @@
                 "path": [
                     "${workspaceRoot}",
                     "/Users/matty/projects/avrCrypto/avr",
+                    "/Users/matty/projects/avrCrypto/avr/sys",
+                    "/Users/matty/projects/avrCrypto/avr/lcd",
+                    "/Users/matty/projects/avrCrypto/avr/buttons",
+                    "/Users/matty/projects/avrCrypto/avr/string",
+                    "/Users/matty/projects/avrCrypto/avr/ui",
                     "/usr/local/homebrew/Cellar/avr-gcc/7.2.0/avr/include",
                     "/usr/local/homebrew/Cellar/avr-gcc/7.2.0/avr/include/avr"
                 ],

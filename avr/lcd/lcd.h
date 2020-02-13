@@ -8,13 +8,15 @@
 #ifndef LCD_H_
 #define LCD_H_
 
-#include <util/delay.h>
+#include <avr/pgmspace.h>
 
 #include "../project.h"
 #include "../sys/ioDefinitions.h"
 
 extern volatile uint8_t backlightPWMVal;
 
+// line number starting addresses, including bit 8
+// (which is the command bit for 'address')
 enum lcd_line_t
 {
     LINE_1 = 0x80,
@@ -30,20 +32,14 @@ public:
     void clearAll();
     void clearLine(lcd_line_t line);
 
-    void writeLine(lcd_line_t line, char* text);
-    void writeLineAt(lcd_line_t line, uint8_t posn, char* text);
-    void writeLine(lcd_line_t line, const char* text);
-    void writeLineAt(lcd_line_t line, uint8_t posn, const char* text);
-    void writeCharAt(lcd_line_t line, uint8_t posn, char c);
+    void writeString(lcd_line_t line, const char* text, uint8_t posn = 0);
+    void writeChar(lcd_line_t line, const char c, uint8_t posn = 0);
 
 private:
     lcd(bool debug = false) {}
     virtual ~lcd() {}
     static lcd* _inst;
     void init();
-
-    char blank[20];
-    char lineBuffer[21];
 
     void writeNibble(uint8_t b);
     void writeByte(uint8_t b);

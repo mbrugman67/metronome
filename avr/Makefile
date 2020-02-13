@@ -45,11 +45,6 @@ $(OBJDIR)%.o: %.cpp $(HEADERS) Makefile
 	@echo "Compiling $<"
 	@$(CXX) $(CFLAGS) $(INCDIRS) -c -o $@ $<;
 
-$(OBJDIR)%.o: %.cpp $(HEADERS) Makefile
-	@mkdir -p $(@D)
-	@echo "Compiling $<"
-	@$(CXX) $(CFLAGS) $(INCDIRS) -c -o $@ $<;	
-
 $(TARGET).elf: $(COBJECTS) $(CPPOBJECTS)
 	@mkdir -p $(@D)
 	@echo ""

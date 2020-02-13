@@ -52,29 +52,27 @@ int main(void)
     buttons* hdwr = buttons::getInstance();
 
     display->clearAll();
-    //display->clearLine(LINE_1);
-    //display->clearLine(LINE_2);
-    //display->clearLine(LINE_3);
-    //display->clearLine(LINE_4);
 
     setupWatchdog();
     sei();
 
 #ifdef DEBUG
     printf_P(PSTR("Starting metronome main loop\r\n"));
-
-    //char stuff[21];
-    //strncpy(stuff, "Well, fuck me.", 20);
-    //display->writeLineAt(LINE_2, 3, stuff);
-    //                          00000000011111111112
-    //                          12345678901234567890
-    display->writeLine(LINE_1, "Stuff on line 1     ");
-    display->writeLine(LINE_2, "  Hi Sweetie! ;)    ");
-    display->writeLine(LINE_3, "   Stuff on line 3  ");
-    display->writeLine(LINE_4, "    Stuff on line 4 ");
 #endif
 
+    //                          00000000011111111112
+    //                          12345678901234567890
+    display->writeString(LINE_1, "1234567890123456789");
+    display->writeString(LINE_2, "  Hi Sweetie! ;)");
+    display->writeString(LINE_3, "1234567890123456789");
+    display->writeString(LINE_4, "Elapsed: ");
+
     uint16_t blinkyTimer = 0;
+    uint8_t count = 0;
+    uint8_t seconds = 0;
+    uint8_t minutes = 0;
+    uint16_t last_ms = (milliseconds % 1000);
+    char timestring[21];
 
     while (true)
     {
@@ -105,11 +103,32 @@ int main(void)
             
             case 2:
             {
+                uint16_t msnow = (uint16_t)milliseconds % 1000;
+                if (last_ms > msnow)
+                {
+                    ++seconds;
+                }
+                last_ms = msnow;
+
+                if (seconds == 60)
+                {
+                    ++minutes;
+                    seconds = 0;
+                }
+
+                if (!(count % 128))
+                {
+                    snprintf(timestring, 20, "%02d:%02d.%01d     ",
+                        minutes, seconds, msnow / 100);
+                    
+                    display->writeString(LINE_4, timestring, strlen("Elapsed: "));
+                }
                 //string->update();
             }  break;
             
             case 3:
             {
+
                 //interface.update();
 
                 //if (interface.stopAll())                string->stop();
