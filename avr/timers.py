@@ -11,9 +11,9 @@ Parameters:
          Defaulut value is 1.0
     -f - CPU frequency in Megahertz.  Default is 16.0
     -p - AVR part.  Choices are:
-        328p - ATMega328p, typical Arduino part
-        32u4 - ATMega32u4, used in Leonardo
-        644 - ATMega644, one that I've used in other projects
+           328p - ATMega328p, typical Arduino part
+           32u4 - ATMega32u4, used in Leonardo
+           644 - ATMega644, one that I use in other projects
 
 Output will be a list of available prescalers and count values
 that match for each timer for that combination of part, frequency,
@@ -30,6 +30,11 @@ guarantee is given to accuracy; always refer to datasheets if
 there's any questions
 
 Feel free to add more AVR models
+
+By the way, I detest weakly typed languages like python.  I'm 
+only writing this in python as a learning thing.  Employers 
+seem to like this shit for whatever reason.  Maybe because 
+it's a damned bootcamp language, I dunno....
 '''
 
 class ATMega328p():
@@ -233,7 +238,7 @@ class TimerCalc():
         Utility to calculate percentage error from a
         given value
         '''
-        if desired > 0:
+        if desired != 0:
             return ((actual - desired) / desired)
         else:
             return (1)
