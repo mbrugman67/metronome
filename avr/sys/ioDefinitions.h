@@ -198,4 +198,10 @@
 #define LCD_D7_TGL()        PIN_AD5_TGL()
 #define LCD_D7_SET(x)       PIN_AD5_SET(x)
 #define LCD_D7_GET()        PIN_AD5_GET()
+
+#define LCD_CNTRST_ON()     PIN_IO3_ON()
+#define LCD_CNTRST_OFF()    PIN_IO3_OFF()
+#define LCD_CNTRST_TGL()    PIN_IO3_TGL()
+#define LCD_CNTRST_SET(x)   PIN_IO3_SET(x)
+#define LCD_CNTRST_GET()    PIN_IO3_GET()
 #endif

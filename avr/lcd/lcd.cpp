@@ -108,14 +108,17 @@ void lcd::writeString(lcd_line_t line, const char* text, uint8_t posn)
     const char* c = text;
     size_t len = strlen(text);
 
-    if (len + posn > MAX_LINE_LENGTH)
+    if (len + posn >= MAX_LINE_LENGTH)
     {
-        len = MAX_LINE_LENGTH - posn;
+        len = MAX_LINE_LENGTH - posn - 1;
     }
 
+    // set the cursor for the first position.  it should 
+    // auto-increment for each char written
+    this->sendCmd((uint8_t)line + posn);
+    
     for (size_t ii = 0; ii < len; ii++)
     {
-        this->sendCmd((uint8_t)line + ii + posn);
         this->sendChar(*c);
         ++c;
     }
@@ -135,9 +138,9 @@ void lcd::writeChar(lcd_line_t line, const char c, uint8_t posn)
     printf_P(PSTR("LCD writeCharAt(0x%02x, %d, >%c<)\n"), (uint8_t)line, posn, c);
 #endif
 
-    if (posn > MAX_LINE_LENGTH)
+    if (posn >= MAX_LINE_LENGTH)
     {
-        posn = MAX_LINE_LENGTH;
+        posn = MAX_LINE_LENGTH - 1;
     }
 
     this->sendCmd((uint8_t)line + posn);
@@ -154,26 +157,30 @@ void lcd::writeChar(lcd_line_t line, const char c, uint8_t posn)
  ***********************************************/
 void lcd::init()
 {
+    // initial I/O states
     LCD_D4_OFF();
     LCD_D5_OFF();
     LCD_D6_OFF();
     LCD_D7_OFF();
     LCD_E_ON();
     LCD_RS_OFF();
+    LCD_CNTRST_OFF();
 
     // wait for LCD to be sure it's powered up
     _delay_ms(5);  
     _delay_ms(5);  
     _delay_ms(5);  
 
+    // startup sequence.  The manual sez so.
     this->writeNibble(0x03);
     _delay_ms(5);
-    this->writeNibble(0x03);    //200
+    this->writeNibble(0x03);
     _delay_ms(5);
-    this->writeNibble(0x03);    // 40
+    this->writeNibble(0x03);
     _delay_ms(5);
 
-    this->writeNibble(0x02);     // 4-bit mode
+    // 4-bit mode
+    this->writeNibble(0x02);
     _delay_ms(5);
 
     // display on, cursor hidden
@@ -271,10 +278,10 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
 
     if (count < backlightPWMVal)
     {
-        PIN_IO3_ON();
+        LCD_CNTRST_ON();
     }
     else
     {
-        PIN_IO3_OFF();
+        LCD_CNTRST_OFF();
     }
 }
