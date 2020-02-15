@@ -26,6 +26,7 @@ int main(void)
 {
     uint8_t taskNum = 0;
 
+#ifdef DEBUG
     cfgSerial(S_BAUD_115200, S_FORMAT_8N1);
 
     // set stdin and stdout to go through the serial port
@@ -34,6 +35,7 @@ int main(void)
     uart_str.get = USART0ReceiveByte;
     uart_str.flags = _FDEV_SETUP_RW;
     stdout = stdin = &uart_str;
+#endif
 
     // user interface drives it all
     ui interface;
