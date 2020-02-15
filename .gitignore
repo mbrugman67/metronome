@@ -2,3 +2,5 @@
 .gcode
 bin/
 obj/
+stl/
+gcode/
