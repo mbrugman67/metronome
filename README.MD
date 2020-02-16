@@ -1,6 +1,8 @@
 # The over-engineered metronome
 I was looking for a new project using only parts I had at home.  I'm also learning guitar, so I suddenly got the idea of makeing a metronome.
 
+## Status - oh, not even close to being done ;)
+
 ### What the heck is it?
 A string of addressible LEDs will give a visual timing indicator used to help with guitaring.  Being over-engineered, it will have some pushbuttons and an LCD display.  Because why not?
 
@@ -34,6 +36,10 @@ I have never used the Arduino thingy, just never saw the need for it.  I don't l
 Editing is done in MS VS Code; I really like it as an editor.  It is the same look and feel on Mac OSX and Linux, and has a nice selection of plugins available.
 
 There's a `Makefile` that will work for Linux, you may just need to change the first two lines to correctly point to your installation.  Windows people are on their own.
+
+For debugging, I'm using a combination of debug print statements and a logic analyzer (and winky lights).  The print statements are sent out the USB-to-Serial link and can just be read in a serial terminal.
+
+*When building for release, comment out the line that adds -DDEBUG to the CFLAGS.  It'll pull out all of the serial and print stuff, which will cut a large hunk out of the compiled hex file*
 ##### 3D design
 The 3D modeling is all done in OpenSCAD.  The OpenSCAD files are in the repo, but I didn't include the gcode from the slicer because that's pretty dependent on the specific printer being used.
 ##### Diagrams, etc
