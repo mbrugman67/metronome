@@ -44,3 +44,10 @@ For debugging, I'm using a combination of debug print statements and a logic ana
 The 3D modeling is all done in OpenSCAD.  The OpenSCAD files are in the repo, but I didn't include the gcode from the slicer because that's pretty dependent on the specific printer being used.
 ##### Diagrams, etc
 Diagrams are in DrawIO.  It's free, and something I'm just learning to use.
+
+### Notes to read if you've only used the Arduino IDE Chingus Thingy
+If you're coming from the Arduino IDE... Well; I've never used it because I don't like that kind of simplification of things. It's a good way for people to learn, but they don't necessarily learn the 'real' way things work. If you want to know what's under the hood, there are two pieces of documentation that you absolutely must look at.
+
+The first is the docs for avr libc. The compiler we're going to use as a gnu thing, avr-gcc, but what it really needs to work is a standard 'c' library to link to. One that is made to work on the AVR microcontrollers. The documentation for it is here. Don't read from start to end, but take a look. You'll see which headers need to be used for which functions and get a good overview of the toolchain.
+
+The next thing is the datasheet for the AVR. Now that Microchip has purchased Atmel, I hope they keep up the good documentation that Atmel had... The nearest I can see with a quick glance is here. Work your way through the basics and focus on the peripherals. Without the Arduino environment to help you, you'll need to understand how to use the peripherals; how their registers work and such.
