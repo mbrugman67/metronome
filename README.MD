@@ -38,6 +38,3 @@ There's a `Makefile` that will work for Linux, you may just need to change the f
 The 3D modeling is all done in OpenSCAD.  The OpenSCAD files are in the repo, but I didn't include the gcode from the slicer because that's pretty dependent on the specific printer being used.
 ##### Diagrams, etc
 Diagrams are in DrawIO.  It's free, and something I'm just learning to use.
-
-git remote add origin git@github.com:mbrugman67/metronome.git
-git push -u origin master
