@@ -4,6 +4,10 @@
  * handle standard Hitachi-interfaced LCD.  This
  * particular unit is a 4x20 and will be used in
  * 4-bit mode
+ * 
+ * quick note:
+ * _delay_us() max is 768 / F_CPU [MHz] = 48 @ 16MHz
+ * _delay_ms() max is 262 / F_CPU [MHz] = 17 @ 16MHz
  **************************************************/
 
 #include <stdlib.h>
@@ -45,7 +49,7 @@ lcd* lcd::getInstance()
     if (!_inst)
     {
         _inst = (lcd*)malloc(sizeof(lcd));
-        backlightPWMVal = 24;
+        backlightPWMVal = 40;
         _inst->init();
     }
 
@@ -61,8 +65,16 @@ lcd* lcd::getInstance()
  ***********************************************/
 void lcd::clearAll()
 {
-    this->sendCmd(0x01); // clear the whole thang
-    _delay_ms(2);     // This command takes 1.64 ms
+    this->clearLine(LINE_1);
+    this->clearLine(LINE_2);
+    this->clearLine(LINE_3);
+    this->clearLine(LINE_4);
+    this->writeChar(LINE_1, 0x20, 0);
+
+    // I have a somewhat brain-dead display; the clear
+    // command isn't working
+    //this->sendCmd(0x01); // clear the whole thang
+    //_delay_ms(2);     // This command takes 1.64 ms
 
 #ifdef DEBUG
     printf_P(PSTR("lcd::clearAll()\n"));
@@ -110,15 +122,14 @@ void lcd::writeString(lcd_line_t line, const char* text, uint8_t posn)
 
     if (len + posn >= MAX_LINE_LENGTH)
     {
-        len = MAX_LINE_LENGTH - posn - 1;
+        len = MAX_LINE_LENGTH - posn;
     }
 
-    // set the cursor for the first position.  it should 
-    // auto-increment for each char written
     this->sendCmd((uint8_t)line + posn);
     
     for (size_t ii = 0; ii < len; ii++)
     {
+        //this->sendCmd((uint8_t)line + ii + posn);
         this->sendChar(*c);
         ++c;
     }
@@ -158,18 +169,13 @@ void lcd::writeChar(lcd_line_t line, const char c, uint8_t posn)
 void lcd::init()
 {
     // initial I/O states
-    LCD_D4_OFF();
-    LCD_D5_OFF();
-    LCD_D6_OFF();
-    LCD_D7_OFF();
-    LCD_E_ON();
     LCD_RS_OFF();
-    LCD_CNTRST_OFF();
 
     // wait for LCD to be sure it's powered up
-    _delay_ms(5);  
-    _delay_ms(5);  
-    _delay_ms(5);  
+    for (size_t ii = 0; ii < 10; ++ii)
+    {
+        _delay_ms(5);  
+    }
 
     // startup sequence.  The manual sez so.
     this->writeNibble(0x03);
@@ -184,10 +190,11 @@ void lcd::init()
     _delay_ms(5);
 
     // display on, cursor hidden
-    this->sendCmd(0x0c);
+    this->sendCmd(0x28);
+    _delay_ms(1);
 
-    // 4-bit mode, one-line mode (do not wrap at end of line)
-    this->sendCmd(0x14);
+    this->sendCmd(0x0c);
+    this->sendCmd(0x06);
 
 #ifdef DEBUG
     printf_P(PSTR("LCD init done\n"));
@@ -202,7 +209,6 @@ void lcd::init()
  ***********************************************/
 void lcd::writeNibble(uint8_t b)
 {
-    cli();
     LCD_E_ON();
     
     LCD_D4_SET(GETBIT(b, 0));
@@ -210,11 +216,11 @@ void lcd::writeNibble(uint8_t b)
     LCD_D6_SET(GETBIT(b, 2));
     LCD_D7_SET(GETBIT(b, 3));
 
-    _delay_us(10);
+    _delay_us(2);
 
     LCD_E_OFF();
-    _delay_us(30);
-    sei();
+    _delay_us(44);
+
 #ifdef DEBUG
     printf_P(PSTR("lcd::writeNibble(0x%x), RS %c e %c 0x%x\n"), 
         b & 0x0f, 
@@ -252,6 +258,7 @@ void lcd::sendChar(char c)
 {
     LCD_RS_ON();
     this->writeByte(c);
+    LCD_RS_OFF();
 }
 
 /************************************************
@@ -268,8 +275,8 @@ void lcd::sendCmd(uint8_t cmd)
 /*****************************************************
 * PWM timer, every .04ms
 ******************************************************
-* This is a 20Khz timer, but PWM counter is 256, so
-* actual PWM frequency comes out to 78-1/8 Hz
+* This is a 25Khz timer, but PWM counter is 256, so
+* actual PWM frequency comes out to 97.7 Hz
 *****************************************************/
 ISR(TIMER1_COMPA_vect, ISR_BLOCK) 
 {

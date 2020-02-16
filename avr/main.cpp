@@ -53,21 +53,17 @@ int main(void)
     //LEDString* string = LEDString::getInstance();
     buttons* hdwr = buttons::getInstance();
 
-    display->clearAll();
-
     setupWatchdog();
     sei();
 
 #ifdef DEBUG
     printf_P(PSTR("Starting metronome main loop\r\n"));
 #endif
-
-    //                          00000000011111111112
-    //                          12345678901234567890
-    display->writeString(LINE_1, "1234567890123456789");
-    display->writeString(LINE_2, "  Hi Sweetie! ;)");
-    display->writeString(LINE_3, "1234567890123456789");
-    display->writeString(LINE_4, "Elapsed: ");
+    display->clearAll();
+    display->writeString(LINE_1, "12345678901234567890");
+    display->writeChar(LINE_2, 0xc2, 16); 
+    display->writeString(LINE_2, "Hi Sweetie! ", 4);
+    display->writeString(LINE_3, "Elapsed: ");
 
     uint16_t blinkyTimer = 0;
     uint8_t count = 0;
@@ -75,6 +71,8 @@ int main(void)
     uint8_t minutes = 0;
     uint16_t last_ms = (milliseconds % 1000);
     char timestring[21];
+    uint8_t count2 = 0;
+    uint8_t posn = 0;
 
     while (true)
     {
@@ -118,24 +116,24 @@ int main(void)
                     seconds = 0;
                 }
 
-                if (!(count % 128))
+                if (!(++count % 32))
                 {
-                    snprintf(timestring, 20, "%02d:%02d.%01d     ",
+                    snprintf(timestring, 20, "%02d:%02d.%01d",
                         minutes, seconds, msnow / 100);
                     
-                    display->writeString(LINE_4, timestring, strlen("Elapsed: "));
+                    display->writeString(LINE_3, timestring, strlen("Elapsed: "));
                 }
                 //string->update();
             }  break;
             
             case 3:
             {
-
                 //interface.update();
 
                 //if (interface.stopAll())                string->stop();
                 //else if (interface.startMetronome())    string->start(interface.getBPM());
                 //else if (interface.startPretty())       string->pretty();
+
 
             }  break;
         }

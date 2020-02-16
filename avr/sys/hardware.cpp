@@ -44,15 +44,15 @@ void setupWatchdog(void)
 /*******************************************
 * setupTimer1()
 ********************************************
-* PWM timer, frequency of 20KHz
+* PWM timer, frequency of 25KHz
 ********************************************/
 void setupTimer1(void)
 {
     TCCR1A = 0;
     TCCR1C = 0;
 
-    // count of 100, prescaler 8 means interval of .05 ms
-    OCR1A = 100;
+    // count of 80, prescaler 8 means interval of .04 ms
+    OCR1A = 80;
 
     // WGM mode CTC, prescaler of 8
     TCCR1B = (BIT(WGM12) | BIT(CS11));
