@@ -60,126 +60,55 @@ buttons* buttons::getInstance()
 void buttons::update()
 {
 #ifdef DEBUG
-    static button_t last;
-    if (last.menu != btns.menu)
+    static button_t last[BUTTON_COUNT];
+    for (size_t ii = 0; ii < BUTTON_COUNT; ++ii)
     {
-        printf_P(PSTR("Menu button from %s to %s\n"),
-            this->buttonStateToText(last.menu),
-            this->buttonStateToText(btns.menu));
-        
-        last.menu = btns.menu;
-    }
-
-    if (last.up != btns.up)
-    {
-        printf_P(PSTR("Up button from %s to %s\n"),
-            this->buttonStateToText(last.up),
-            this->buttonStateToText(btns.up));
-
-        last.up = btns.up;
-    }    
-
-    if (last.down != btns.down)
-    {
-        printf_P(PSTR("Down button from %s to %s\n"),
-            this->buttonStateToText(last.down),
-            this->buttonStateToText(btns.down));
-
-        last.down = btns.down;
-    }    
-
-    if (last.enter != btns.enter)
-    {
-        printf_P(PSTR("Enter button from %s to %s\n"),
-            this->buttonStateToText(last.enter),
-            this->buttonStateToText(btns.enter));
-
-        last.enter = btns.enter;
-    }    
+        if (last[ii].state != btns[ii].state)
+        {
+            printf_P(PSTR("%s button from %s to %s\n"),
+                this->buttonStateToText(last[ii].state),
+                this->buttonStateToText(btns[ii].state));
+        }
+    }   
 #endif
 
-    // increment all the timers
-    ++btns.menuTime;
-    ++btns.upTime;
-    ++btns.downTime;
-    ++btns.enterTime;
-    
-    /****************************************
-     * general comments that apply to all 4:
-     ****************************************
-     * each button input has a pull-up and
-     * is driven to ground when pressed, so
-     * an "high" value mean button input is
-     * off.  If off, clear the down time and 
-     * set that state.
-     * 
-     * If pressed for greater than the debounce
-     * time but less than hold time, then button
-     * is "down".  Once held continuously for
-     * the hold time, it is held
-     ***************************************/
-    if (MENU_BUTTON())
+    for (size_t ii = 0; ii < BUTTON_COUNT; ++ii)
     {
-        btns.menuTime = 0;
-        btns.menu = BUTTON_OFF;
-    } 
-    else if (btns.menuTime > HOLD_TIME)
-    {
-        // set the on time to be held time
-        // plus one.  The problem would be
-        // if held for a long time, the integer
-        // will rollover and we'll get an 
-        // unwanted "up" and "down" event
-        btns.menuTime = HOLD_TIME + 1;
-        btns.menu = BUTTON_HELD;
-    }
-    else if (btns.menuTime > DEBOUNCE_TIME)
-    {
-        btns.menu = BUTTON_DOWN;
-    }
-    
-    if (UP_BUTTON())
-    {
-        btns.upTime = 0;
-        btns.up = BUTTON_OFF;
-    } 
-    else if (btns.upTime > HOLD_TIME)
-    {
-        btns.upTime = HOLD_TIME + 1;
-        btns.up = BUTTON_HELD;
-    }
-    else if (btns.upTime > DEBOUNCE_TIME)
-    {
-        btns.up = BUTTON_DOWN;
-    }
-    
-    if (DOWN_BUTTON())
-    {
-        btns.downTime = 0;
-        btns.down = BUTTON_OFF;
-    } 
-    else if (btns.downTime > HOLD_TIME)
-    {
-        btns.downTime = HOLD_TIME + 1;
-        btns.down = BUTTON_HELD;
-    }
-    else if (btns.downTime > DEBOUNCE_TIME)
-    {
-        btns.down = BUTTON_DOWN;
-    }
-    
-    if (ENTER_BUTTON())
-    {
-        btns.enterTime = 0;
-        btns.enter = BUTTON_OFF;
-    } 
-    else if (btns.enterTime > HOLD_TIME)
-    {
-        btns.enterTime = HOLD_TIME + 1;
-        btns.enter = BUTTON_HELD;
-    }
-    else if (btns.enterTime > DEBOUNCE_TIME)
-    {
-        btns.enter = BUTTON_DOWN;
+        ++btns[ii].time;
+        btns[ii].oneShot = false;
+
+        // get the I/O state of the desired button
+        bool hardwareButton;
+        if (ii == MENU)         hardwareButton = MENU_BUTTON();
+        else if (ii == UP)      hardwareButton = UP_BUTTON();
+        else if (ii == DOWN)    hardwareButton = DOWN_BUTTON();
+        else                    hardwareButton = ENTER_BUTTON();
+        
+        if (hardwareButton)
+        {
+            btns[ii].time = 0;
+            btns[ii].oneShotLatch = false;
+            btns[ii].state = BUTTON_OFF;
+        } 
+        else if (btns[ii].time > HOLD_TIME)
+        {
+            // set the on time to be held time
+            // plus one.  The problem would be
+            // if held for a long time, the integer
+            // will rollover and we'll get an 
+            // unwanted "up" and "down" event
+            btns[ii].time = HOLD_TIME + 1;
+            btns[ii].state = BUTTON_HELD;
+        }
+        else if (btns[ii].time > DEBOUNCE_TIME)
+        {
+            btns[ii].state = BUTTON_DOWN;
+
+            if (!btns[ii].oneShotLatch)
+            {
+                btns[ii].oneShotLatch = true;
+                btns[ii].oneShot = true;
+            }
+        }
     }
 }

@@ -71,8 +71,6 @@ int main(void)
     uint8_t minutes = 0;
     uint16_t last_ms = (milliseconds % 1000);
     char timestring[21];
-    uint8_t count2 = 0;
-    uint8_t posn = 0;
 
     while (true)
     {

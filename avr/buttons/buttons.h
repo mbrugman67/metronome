@@ -35,38 +35,52 @@ public:
     void update();
 
     // four buttons: Menu, Up, Down, Enter
-    bool isMenuPressed()        { return (isButtonOn(btns.menu)); }
-    bool isMenuHeld()           { return (isButtonHeld(btns.menu)); }
+    bool isMenuPressed()        { return (isButtonOn(btns[MENU].state)); }
+    bool isMenuHeld()           { return (isButtonHeld(btns[MENU].state)); }
+    bool menuOneShot()          { return (btns[MENU].oneShot); }
 
-    bool isUpPressed()          { return (isButtonOn(btns.up)); }
-    bool isUpHeld()             { return (isButtonHeld(btns.up)); }
+    bool isUpPressed()          { return (isButtonOn(btns[UP].state)); }
+    bool isUpHeld()             { return (isButtonHeld(btns[UP].state)); }
+    bool upOneShot()            { return (btns[UP].oneShot); }
 
-    bool isDownPressed()        { return (isButtonOn(btns.down)); }
-    bool isDownHeld()           { return (isButtonHeld(btns.down)); }
+    bool isDownPressed()        { return (isButtonOn(btns[DOWN].state)); }
+    bool isDownHeld()           { return (isButtonHeld(btns[DOWN].state)); }
+    bool downOneShot()          { return (btns[DOWN].oneShot); }
 
-    bool isEnterPressed()       { return (isButtonOn(btns.enter)); }
-    bool isEnterHeld()          { return (isButtonHeld(btns.enter)); }
+    bool isEnterPressed()       { return (isButtonOn(btns[MENU].state)); }
+    bool isEnterHeld()          { return (isButtonHeld(btns[MENU].state)); }
+    bool enterOneShot()         { return (btns[MENU].oneShot); }
+
 private:
+    enum BUTTONS 
+    {
+        MENU,
+        UP,
+        DOWN,
+        ENTER,
+        BUTTON_COUNT
+    };
+
+#ifdef DEBUG
+    const char* BUTTON_NAMES[BUTTON_COUNT] = {"Menu", "Up", "Down", "Enter"};
+#endif 
+
     buttons() {}
     virtual ~buttons() {}
     void init();
 
     // Handy struct to hold everything for 
     // all four buttons
-    struct button_t 
+    struct button_t
     {
-        uint8_t     menu : 2;
-        uint8_t     up : 2;
-        uint8_t     down : 2;
-        uint8_t     enter : 2;
-
-        uint8_t     menuTime;
-        uint8_t     upTime;
-        uint8_t     downTime;
-        uint8_t     enterTime;
+        uint8_t     state : 2;
+        uint8_t     oneShot : 1;
+        uint8_t     oneShotLatch : 1;
+        uint8_t     padding : 4;
+        uint8_t     time;
     };
 
-    button_t btns;
+    button_t btns[BUTTON_COUNT];
 
     inline void setButton(uint8_t btn, uint8_t state)
     {
