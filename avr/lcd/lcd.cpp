@@ -20,7 +20,7 @@
 #include "lcd.h"
 #include "../sys/ioDefinitions.h"
 
-volatile uint8_t backlightPWMVal;
+static volatile uint8_t backlightPWMVal;
 
 // Really think before enabling DEBUG here, it will
 // screw up the timing of the signals...
@@ -63,7 +63,7 @@ lcd* lcd::getInstance()
  * the address pointer to top left.  This takes
  * about 1.5 ms to do...
  ***********************************************/
-void lcd::clearAll()
+void lcd::clearAll() const
 {
     this->clearLine(LINE_1);
     this->clearLine(LINE_2);
@@ -87,7 +87,7 @@ void lcd::clearAll()
  * clear the specified line by writing spaces
  * across all chars in that line
  ***********************************************/
-void lcd::clearLine(lcd_line_t line)
+void lcd::clearLine(lcd_line_t line) const
 {
     for (size_t ii = 0; ii < MAX_LINE_LENGTH; ii++)
     {
@@ -111,7 +111,7 @@ void lcd::clearLine(lcd_line_t line)
  * no wrap to the next line.  Any content after
  * position 20 will be truncated
  ***********************************************/
-void lcd::writeString(lcd_line_t line, const char* text, uint8_t posn)
+void lcd::writeString(lcd_line_t line, const char* text, uint8_t posn) const
 {
 #ifdef DEBUG
     printf_P(PSTR("lcd::writeString(0x%02x, %d, >%s<)\n"), (uint8_t)line, posn, text);
@@ -143,7 +143,7 @@ void lcd::writeString(lcd_line_t line, const char* text, uint8_t posn)
  * pos'n zero in the line.  posn is an optional
  * parameter with a default of zero
  ***********************************************/
-void lcd::writeChar(lcd_line_t line, const char c, uint8_t posn)
+void lcd::writeChar(lcd_line_t line, const char c, uint8_t posn) const 
 {
 #ifdef DEBUG
     printf_P(PSTR("LCD writeCharAt(0x%02x, %d, >%c<)\n"), (uint8_t)line, posn, c);
@@ -157,6 +157,18 @@ void lcd::writeChar(lcd_line_t line, const char c, uint8_t posn)
     this->sendCmd((uint8_t)line + posn);
     this->sendChar(c);
 }
+    
+void lcd::setContrast(uint16_t contrast)
+{
+    backlightPWMVal = (uint8_t)contrast;
+}
+
+uint16_t lcd::getContrast() const
+{
+    return ((uint16_t)backlightPWMVal);
+}
+
+
 
 /************************************************
  * init()
@@ -207,7 +219,7 @@ void lcd::init()
  * write a single 4-bit value to the display's
  * data lines.
  ***********************************************/
-void lcd::writeNibble(uint8_t b)
+void lcd::writeNibble(uint8_t b) const
 {
     LCD_E_ON();
     
@@ -237,7 +249,7 @@ void lcd::writeNibble(uint8_t b)
  * sending upper nibble, and then the lower 
  * nibble
  ***********************************************/
-void lcd::writeByte(uint8_t b)
+void lcd::writeByte(uint8_t b) const
 {
     uint8_t high = b >> 4;
     uint8_t low = b & 0x0f;
@@ -254,7 +266,7 @@ void lcd::writeByte(uint8_t b)
  * is assumed address has been properly set up
  * first
  ***********************************************/
-void lcd::sendChar(char c)
+void lcd::sendChar(char c) const
 {
     LCD_RS_ON();
     this->writeByte(c);
@@ -266,7 +278,7 @@ void lcd::sendChar(char c)
  ************************************************
  * send a command to the display
  ***********************************************/
-void lcd::sendCmd(uint8_t cmd)
+void lcd::sendCmd(uint8_t cmd) const
 {
     LCD_RS_OFF();
     this->writeByte(cmd);

@@ -59,11 +59,6 @@ int main(void)
 #ifdef DEBUG
     printf_P(PSTR("Starting metronome main loop\r\n"));
 #endif
-    display->clearAll();
-    display->writeString(LINE_1, "12345678901234567890");
-    display->writeChar(LINE_2, 0xc2, 16); 
-    display->writeString(LINE_2, "Hi Sweetie! ", 4);
-    display->writeString(LINE_3, "Elapsed: ");
 
     uint16_t blinkyTimer = 0;
     uint8_t count = 0;
@@ -71,6 +66,15 @@ int main(void)
     uint8_t minutes = 0;
     uint16_t last_ms = (milliseconds % 1000);
     char timestring[21];
+    
+    display->clearAll();
+    display->writeString(LINE_1, "12345678901234567890");
+    display->writeChar(LINE_2, 0xc2, 16); 
+    display->writeString(LINE_2, "Hi Sweetie! ", 4);
+    display->writeString(LINE_3, "Elapsed: ");
+    
+    snprintf(timestring, 20, "Contrast: %03d", display->getContrast());
+    display->writeString(LINE_4, timestring);
 
     while (true)
     {
@@ -126,6 +130,20 @@ int main(void)
             
             case 3:
             {
+                uint16_t contrast = display->getContrast();
+
+                if (hdwr->upOneShot() && contrast < 200)
+                {
+                    display->setContrast(++contrast);
+                    snprintf(timestring, 20, "Contrast: %03d", display->getContrast());
+                    display->writeString(LINE_4, timestring);
+                }
+                if (hdwr->downOneShot() && display > 0)
+                {
+                    display->setContrast(--contrast);
+                    snprintf(timestring, 20, "Contrast: %03d", display->getContrast());
+                    display->writeString(LINE_4, timestring);
+                }
                 //interface.update();
 
                 //if (interface.stopAll())                string->stop();

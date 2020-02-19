@@ -61,10 +61,6 @@ private:
         BUTTON_COUNT
     };
 
-#ifdef DEBUG
-    const char* BUTTON_NAMES[BUTTON_COUNT] = {"Menu", "Up", "Down", "Enter"};
-#endif 
-
     buttons() {}
     virtual ~buttons() {}
     void init();
@@ -78,6 +74,8 @@ private:
         uint8_t     oneShotLatch : 1;
         uint8_t     padding : 4;
         uint8_t     time;
+        char        name[8];
+        bool        (*btnFnc)(void);
     };
 
     button_t btns[BUTTON_COUNT];
@@ -109,7 +107,7 @@ private:
     {
         switch (s)
         {
-            case BUTTON_OFF:     return ("up");      break;
+            case BUTTON_OFF:     return ("up");     break;
             case BUTTON_DOWN:   return ("down");    break;
             case BUTTON_HELD:   return ("held");    break;
         }

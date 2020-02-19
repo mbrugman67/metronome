@@ -13,8 +13,6 @@
 #include "../project.h"
 #include "../sys/ioDefinitions.h"
 
-extern volatile uint8_t backlightPWMVal;
-
 // line number starting addresses, including bit 8
 // (which is the command bit for 'address')
 enum lcd_line_t
@@ -29,11 +27,14 @@ class lcd
 public: 
     static lcd* getInstance();
 
-    void clearAll();
-    void clearLine(lcd_line_t line);
+    void clearAll() const;
+    void clearLine(lcd_line_t line) const;
 
-    void writeString(lcd_line_t line, const char* text, uint8_t posn = 0);
-    void writeChar(lcd_line_t line, const char c, uint8_t posn = 0);
+    void writeString(lcd_line_t line, const char* text, uint8_t posn = 0) const;
+    void writeChar(lcd_line_t line, const char c, uint8_t posn = 0) const;
+    
+    void setContrast(uint16_t contrast);
+    uint16_t getContrast() const;
 
 private:
     lcd(bool debug = false) {}
@@ -41,10 +42,10 @@ private:
     static lcd* _inst;
     void init();
 
-    void writeNibble(uint8_t b);
-    void writeByte(uint8_t b);
-    void sendChar(char c);
-    void sendCmd(uint8_t cmd);
+    void writeNibble(uint8_t b) const;
+    void writeByte(uint8_t b) const;
+    void sendChar(char c) const;
+    void sendCmd(uint8_t cmd) const;
 };
 
 #endif

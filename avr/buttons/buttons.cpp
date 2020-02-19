@@ -17,6 +17,7 @@
  * for the "down" state
  **************************************************/
 #include <stdlib.h>
+#include <string.h>
 
 #include "buttons.h"
 #include "../project.h"
@@ -25,6 +26,35 @@
 #include <stdio.h>
 #include <avr/pgmspace.h>
 #endif
+
+/************************************************
+ * fnXXXXBtn()
+ ************************************************
+ * Generic static functions for the button action 
+ ***********************************************/ 
+static inline bool fnMenuBtn()
+{
+    if (MENU_BUTTON())      return (false);
+    else                    return (true);
+}
+
+static inline bool fnUpBtn()
+{
+    if (UP_BUTTON())      return (false);
+    else                    return (true);
+}
+
+static inline bool fnDownBtn()
+{
+    if (DOWN_BUTTON())      return (false);
+    else                    return (true);
+}
+
+static inline bool fnEnterBtn()
+{
+    if (ENTER_BUTTON())      return (false);
+    else                    return (true);
+}
 
 // debounce and "HOLD" time in milliseconds, converted
 // to task update intervals
@@ -46,6 +76,17 @@ buttons* buttons::getInstance()
     if (!_inst)
     {
         _inst = (buttons*)malloc(sizeof(buttons));
+
+        // button function pointers into the button structure
+        _inst->btns[MENU].btnFnc    = fnMenuBtn;
+        _inst->btns[UP].btnFnc      = fnUpBtn;
+        _inst->btns[DOWN].btnFnc    = fnDownBtn;
+        _inst->btns[ENTER].btnFnc   = fnEnterBtn;
+
+        strncpy(_inst->btns[MENU].name, "Menu", 8);
+        strncpy(_inst->btns[UP].name, "Up", 8);
+        strncpy(_inst->btns[DOWN].name, "Down", 8);
+        strncpy(_inst->btns[ENTER].name, "Enter", 8);
     }
 
     return (_inst);
@@ -66,9 +107,11 @@ void buttons::update()
         if (last[ii].state != btns[ii].state)
         {
             printf_P(PSTR("%s button from %s to %s\n"),
+                btns[ii].name,
                 this->buttonStateToText(last[ii].state),
                 this->buttonStateToText(btns[ii].state));
         }
+        last[ii].state = btns[ii].state;
     }   
 #endif
 
@@ -76,15 +119,8 @@ void buttons::update()
     {
         ++btns[ii].time;
         btns[ii].oneShot = false;
-
-        // get the I/O state of the desired button
-        bool hardwareButton;
-        if (ii == MENU)         hardwareButton = MENU_BUTTON();
-        else if (ii == UP)      hardwareButton = UP_BUTTON();
-        else if (ii == DOWN)    hardwareButton = DOWN_BUTTON();
-        else                    hardwareButton = ENTER_BUTTON();
         
-        if (hardwareButton)
+        if (!btns[ii].btnFnc())
         {
             btns[ii].time = 0;
             btns[ii].oneShotLatch = false;
