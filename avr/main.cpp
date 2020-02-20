@@ -9,9 +9,9 @@
 
 #include "project.h"
 #include "sys/hardware.h"
-#include "sys/eeprom.h"
 #include "sys/serialPrintf.h"
 
+#include "nvm/nvm.h"
 #include "lcd/lcd.h"
 #include "string/LEDString.h"
 #include "buttons/buttons.h"
@@ -45,19 +45,20 @@ int main(void)
     setupIO();
     setupTimer1();
     setupTimer2();
-    initEEPROM(); 
     
     // singleton instance of LCD handler,
     // LED string, and pushbutton handler classes
     lcd* display = lcd::getInstance();
     //LEDString* string = LEDString::getInstance();
     buttons* hdwr = buttons::getInstance();
+    nvm* eeprom = nvm::getInstance();
 
     setupWatchdog();
     sei();
 
 #ifdef DEBUG
-    printf_P(PSTR("Starting metronome main loop\r\n"));
+    printf_P(PSTR("Starting metronome main loop, boot count %d\r\n"),
+        eeprom->getBootCount());
 #endif
 
     uint16_t blinkyTimer = 0;
@@ -66,9 +67,12 @@ int main(void)
     uint8_t minutes = 0;
     uint16_t last_ms = (milliseconds % 1000);
     char timestring[21];
+    const char* HEADER_LINE = "MNU   UP   DN   ENTR";
     
+    strncpy(timestring, HEADER_LINE, 20);
+
     display->clearAll();
-    display->writeString(LINE_1, "12345678901234567890");
+    display->writeString(LINE_1, timestring);
     display->writeChar(LINE_2, 0xc2, 16); 
     display->writeString(LINE_2, "Hi Sweetie! ", 4);
     display->writeString(LINE_3, "Elapsed: ");
@@ -135,13 +139,13 @@ int main(void)
                 if (hdwr->upOneShot() && contrast < 200)
                 {
                     display->setContrast(++contrast);
-                    snprintf(timestring, 20, "Contrast: %03d", display->getContrast());
+                    snprintf(timestring, 20, "Contrast: %03d     ", display->getContrast());
                     display->writeString(LINE_4, timestring);
                 }
                 if (hdwr->downOneShot() && display > 0)
                 {
                     display->setContrast(--contrast);
-                    snprintf(timestring, 20, "Contrast: %03d", display->getContrast());
+                    snprintf(timestring, 20, "Contrast: %03d     ", display->getContrast());
                     display->writeString(LINE_4, timestring);
                 }
                 //interface.update();

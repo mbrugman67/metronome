@@ -28,15 +28,6 @@
 #include <util/delay.h>
 #include <stdint.h>
 
-#ifdef ARDUINO
-#if (ARDUINO >= 100)
-#include <Arduino.h>
-#else
-#include <WProgram.h>
-#include <pins_arduino.h>
-#endif
-#endif
-
 //Easier to change cRGB into any other rgb struct
 #include "cRGB.h"
 
