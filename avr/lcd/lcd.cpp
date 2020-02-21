@@ -12,9 +12,11 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/pgmspace.h>
 #include <util/delay.h>
 
 #include "lcd.h"
@@ -26,11 +28,6 @@ static volatile uint8_t backlightPWMVal;
 // screw up the timing of the signals...
 #ifdef DEBUG
 #undef DEBUG
-#endif
-
-#ifdef DEBUG
-#include <stdio.h>
-#include <avr/pgmspace.h>
 #endif
 
 // 4 x 20 display
@@ -133,6 +130,20 @@ void lcd::writeString(lcd_line_t line, const char* text, uint8_t posn) const
         this->sendChar(*c);
         ++c;
     }
+}
+
+
+/************************************************
+ * writePString()
+ ************************************************
+ * a version of writeString() that takes a pointer
+ * to Flash instead of RAM for the string.
+ ***********************************************/
+void lcd::writePString(lcd_line_t line, PGM_P text, uint8_t posn) const
+{
+    char buffer[21] = {0};
+    strncpy_P(buffer, text, 20);
+    this->writeString(line, buffer, posn);
 }
 
 /************************************************

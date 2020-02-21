@@ -16,30 +16,31 @@
 #include "../project.h"
 #include "../buttons/buttons.h"
 #include "../lcd/lcd.h"
+#include "../nvm/nvm.h"
+#include "../string/LEDString.h"
 
 class ui
 {
     enum menu_state_t
     {
-        MENU_IDLE,
-        MENU_SET_BPM,
-        MENU_START_PATTERN
+        MENU_STATE_IDLE,
+        MENU_STATE_BPM,
+        MENU_STATE_PATTERN,
+        MENU_STATE_CONTRAST,
+        MENU_STATE_INFO
     };
 
     enum action_state_t
     {
         ACTION_STOPPED,
         ACTION_STARTING,
-        ACTION_RUNNING,
-        ACTION_STARTING_PRETTY,
-        ACTION_PRETTY
+        ACTION_RUNNING
     };    
 
 public:
-    ui() {}
+    ui();
     ~ui() {}
 
-    void init();
     void update();
 
     bool startMetronome()   { return (start); }
@@ -52,15 +53,23 @@ private:
     bool stop;
     bool pretty;
     uint16_t bpm;
+    uint16_t saveTime;
     menu_state_t state;
     action_state_t action;
 
-    buttons* io;
+    char buffer[21];
+
+    buttons* btns;
     lcd* display;
+    nvm* settings;
+    LEDString* leds;
 
     void stateSetBPM();
     void stateIdle();
-    void sateStartPretty();
+    void stateStartPretty();
+
+    void updateBPMLine(bool home = false);
+    void updateContrastLine();
 };
 
 #endif // UI_H_

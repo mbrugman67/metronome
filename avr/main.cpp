@@ -37,10 +37,6 @@ int main(void)
     stdout = stdin = &uart_str;
 #endif
 
-    // user interface drives it all
-    ui interface;
-    interface.init();
-
     // init hardware
     setupIO();
     setupTimer1();
@@ -53,6 +49,23 @@ int main(void)
     buttons* hdwr = buttons::getInstance();
     nvm* eeprom = nvm::getInstance();
 
+    // if, for some reason, the singletons weren't 
+    // instantiated, just turn on the red LED and
+    // loop forever. No worries about the watchdog,
+    // it hasn't been started yet
+    if (!display || !hdwr || !eeprom)
+    {
+        while (true)
+        {
+            LED_L_ON();
+        }
+    }
+
+    display->clearAll();
+
+    // user interface drives it all
+    ui interface;
+
     setupWatchdog();
     sei();
 
@@ -62,23 +75,6 @@ int main(void)
 #endif
 
     uint16_t blinkyTimer = 0;
-    uint8_t count = 0;
-    uint8_t seconds = 0;
-    uint8_t minutes = 0;
-    uint16_t last_ms = (milliseconds % 1000);
-    char timestring[21];
-    const char* HEADER_LINE = "MNU   UP   DN   ENTR";
-    
-    strncpy(timestring, HEADER_LINE, 20);
-
-    display->clearAll();
-    display->writeString(LINE_1, timestring);
-    display->writeChar(LINE_2, 0xc2, 16); 
-    display->writeString(LINE_2, "Hi Sweetie! ", 4);
-    display->writeString(LINE_3, "Elapsed: ");
-    
-    snprintf(timestring, 20, "Contrast: %03d", display->getContrast());
-    display->writeString(LINE_4, timestring);
 
     while (true)
     {
@@ -109,51 +105,12 @@ int main(void)
             
             case 2:
             {
-                uint16_t msnow = (uint16_t)milliseconds % 1000;
-                if (last_ms > msnow)
-                {
-                    ++seconds;
-                }
-                last_ms = msnow;
-
-                if (seconds == 60)
-                {
-                    ++minutes;
-                    seconds = 0;
-                }
-
-                if (!(++count % 32))
-                {
-                    snprintf(timestring, 20, "%02d:%02d.%01d",
-                        minutes, seconds, msnow / 100);
-                    
-                    display->writeString(LINE_3, timestring, strlen("Elapsed: "));
-                }
                 //string->update();
             }  break;
             
             case 3:
             {
-                uint16_t contrast = display->getContrast();
-
-                if (hdwr->upOneShot() && contrast < 200)
-                {
-                    display->setContrast(++contrast);
-                    snprintf(timestring, 20, "Contrast: %03d     ", display->getContrast());
-                    display->writeString(LINE_4, timestring);
-                }
-                if (hdwr->downOneShot() && display > 0)
-                {
-                    display->setContrast(--contrast);
-                    snprintf(timestring, 20, "Contrast: %03d     ", display->getContrast());
-                    display->writeString(LINE_4, timestring);
-                }
-                //interface.update();
-
-                //if (interface.stopAll())                string->stop();
-                //else if (interface.startMetronome())    string->start(interface.getBPM());
-                //else if (interface.startPretty())       string->pretty();
-
+                interface.update();
 
             }  break;
         }

@@ -31,6 +31,7 @@ public:
     void clearLine(lcd_line_t line) const;
 
     void writeString(lcd_line_t line, const char* text, uint8_t posn = 0) const;
+    void writePString(lcd_line_t line, PGM_P text, uint8_t posn = 0) const;
     void writeChar(lcd_line_t line, const char c, uint8_t posn = 0) const;
     
     void setContrast(uint16_t contrast);
