@@ -53,7 +53,9 @@ private:
     bool stop;
     bool pretty;
     uint16_t bpm;
+    uint16_t contrast;
     uint16_t saveTime;
+    uint8_t scrollDelay;
     menu_state_t state;
     action_state_t action;
 
@@ -65,11 +67,15 @@ private:
     LEDString* leds;
 
     void stateSetBPM();
+    void stateSetContrast();
     void stateIdle();
     void stateStartPretty();
 
+    void writeDisplay(uint8_t scrnInx);
     void updateBPMLine(bool home = false);
     void updateContrastLine();
+    void checkAdjustContrast();
+    void checkAdjustBPM();
 };
 
 #endif // UI_H_
