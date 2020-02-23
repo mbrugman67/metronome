@@ -14,10 +14,13 @@
 #include <stdint.h>
 
 #include "../project.h"
-#include "../buttons/buttons.h"
 #include "../lcd/lcd.h"
 #include "../nvm/nvm.h"
-#include "../string/LEDString.h"
+
+#include "uiBase.h"
+#include "uiIdle.h"
+#include "uiBpm.h"
+#include "uiContrast.h"
 
 class ui
 {
@@ -46,36 +49,21 @@ public:
     bool startMetronome()   { return (start); }
     bool startPretty()      { return (pretty); }
     bool stopAll()          { return (stop); }
-    uint16_t getBPM()       { return (bpm); }
 
 private:
     bool start;
     bool stop;
     bool pretty;
-    uint16_t bpm;
-    uint16_t contrast;
-    uint16_t saveTime;
-    uint8_t scrollDelay;
     menu_state_t state;
     action_state_t action;
 
-    char buffer[21];
-
-    buttons* btns;
     lcd* display;
     nvm* settings;
-    LEDString* leds;
 
-    void stateSetBPM();
-    void stateSetContrast();
-    void stateIdle();
-    void stateStartPretty();
-
-    void writeDisplay(uint8_t scrnInx);
-    void updateBPMLine(bool home = false);
-    void updateContrastLine();
-    void checkAdjustContrast();
-    void checkAdjustBPM();
+    uiBase* currentState;
+    uiIdle stateIdle;
+    uiBpm stateBPM;
+    uiContrast stateContrast;
 };
 
 #endif // UI_H_
