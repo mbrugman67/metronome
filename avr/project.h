@@ -5,12 +5,11 @@
 * Project globals
 *******************************************/
 #include <stdint.h>
-extern uint32_t milliseconds;
 
 /*********************************************
 * Number of LEDS in the metronome string
 **********************************************/
-#define STRING_LENGTH   10
+#define STRING_LENGTH   12
 
 /*********************************************
 * Number of tasks, and by definition, interval
@@ -36,5 +35,7 @@ extern uint32_t milliseconds;
 #ifndef CLRBIT
 #define CLRBIT(a, b)	(a &= ~BIT(b))
 #endif
+
+uint32_t getTickCount();
 
 #endif // _PROJECT_H_INCLUDED

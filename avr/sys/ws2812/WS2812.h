@@ -22,9 +22,6 @@
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#ifndef F_CPU
-#define  F_CPU 16000000UL
-#endif
 #include <util/delay.h>
 #include <stdint.h>
 
@@ -32,7 +29,7 @@
 #include "cRGB.h"
 
 // If you want to use the setColorOrder functions, enable this line
-#define RGB_ORDER_ON_RUNTIME
+//#define RGB_ORDER_ON_RUNTIME
 
 #ifdef RGB_ORDER_ON_RUNTIME	
 	#define OFFSET_R(r) r+offsetRed
@@ -47,14 +44,10 @@
 
 class WS2812 {
 public: 
-	WS2812(uint16_t num_led);
+	WS2812();
 	~WS2812();
 	
-	#ifndef ARDUINO
 	void setOutput(const volatile uint8_t* port, volatile uint8_t* reg, uint8_t pin);
-	#else
-	void setOutput(uint8_t pin);
-	#endif
 	
 	cRGB get_crgb_at(uint16_t index);
 	uint8_t set_crgb_at(uint16_t index, cRGB px_value);
@@ -84,7 +77,5 @@ private:
 	volatile uint8_t *ws2812_port_reg;
 	uint8_t pinMask; 
 };
-
-
 
 #endif /* WS2812_H_ */

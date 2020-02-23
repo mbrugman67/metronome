@@ -47,9 +47,9 @@ public:
     bool isDownHeld()           { return (isButtonHeld(btns[DOWN].state)); }
     bool downOneShot()          { return (btns[DOWN].oneShot); }
 
-    bool isEnterPressed()       { return (isButtonOn(btns[MENU].state)); }
-    bool isEnterHeld()          { return (isButtonHeld(btns[MENU].state)); }
-    bool enterOneShot()         { return (btns[MENU].oneShot); }
+    bool isEnterPressed()       { return (isButtonOn(btns[ENTER].state)); }
+    bool isEnterHeld()          { return (isButtonHeld(btns[ENTER].state)); }
+    bool enterOneShot()         { return (btns[ENTER].oneShot); }
 
 private:
     enum BUTTONS 

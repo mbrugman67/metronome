@@ -12,8 +12,10 @@ public:
     
     void update(bool& change);
     void start();
+    PGM_P getName();
 
 private:
+    bool running;
 };
 
 #endif // UI_IDLE_H_

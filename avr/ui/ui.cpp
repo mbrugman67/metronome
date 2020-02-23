@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <avr/pgmspace.h>
+
 /****************************************
  * constructor()
  ****************************************
@@ -41,7 +43,6 @@ ui::ui()
     currentState = &stateIdle;
     currentState->start();
 
-
 #ifdef DEBUG
     printf_P(PSTR("UI init'd\n"));
 #endif
@@ -55,22 +56,23 @@ ui::ui()
  ***************************************/
 void ui::update()
 {
-    /*
-#ifdef DEBUG
-    static menu_state_t lastState = MENU_STATE_PATTERN;
-    if (lastState != state)
-    {
-        printf_P(PSTR("Menu state change from %d to %d\n"), lastState, state);
-        lastState = state;
-    }
-#endif
-    */
    bool changeState;
+ 
    currentState->update(changeState);
    if (changeState)
    {
+#ifdef DEBUG
+    printf_P(PSTR("State change from "));
+    printf_P(currentState->getName());
+#endif
+
        currentState = currentState->getNextState();
        currentState->start();
+#ifdef DEBUG
+    printf_P(PSTR(" to "));
+    printf_P(currentState->getName());
+    printf_P(PSTR("\n"));
+#endif
    }
 
 }

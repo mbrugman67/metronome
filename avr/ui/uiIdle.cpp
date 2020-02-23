@@ -6,6 +6,12 @@
 static const char line2[] PROGMEM = {"XXX BPM, Sweep mode "};
 static const char line3[] PROGMEM = {"Entr to start       "};
 static const char line4[] PROGMEM = {"Menu for settings   "};
+const char menuName[] PROGMEM = "menu idle";
+
+PGM_P uiIdle::getName()
+{
+    return (menuName);
+}
 
 void uiIdle::start()
 {
@@ -16,14 +22,31 @@ void uiIdle::start()
 
     snprintf(buffer, 20, "%3d", settings->getBPM());
     display->writeString(LINE_2, buffer);
+
+    running = false;
 }
 
 void uiIdle::update(bool& change)
 {
-    if (btns->menuOneShot())
+    if (btns->menuOneShot() && !running)
     {
         change = true;
         return;
+    }
+
+    if (btns->enterOneShot())
+    {
+        printf_P(PSTR("WTF1\n"));
+        if (!running)
+        {
+            leds->start(settings->getBPM());
+            running = true;
+        }
+        else
+        {
+            leds->stop();
+            running = false;
+        }
     }
 
 }

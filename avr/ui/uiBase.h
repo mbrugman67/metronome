@@ -1,3 +1,13 @@
+/***************************************************
+ * file: uiBase.h
+ ***************************************************
+ * Base class for menu handler.  Each derived class
+ * will be a single menu function.  In an ideal 
+ * c++ world, this would be a pure virtual class,
+ * but without an implementation of libstdc++ this
+ * isn't possible.  (Same reason that you can't
+ * use new/delete)
+ **************************************************/
 
 #ifndef UI_BASE_H_
 #define UI_BASE_H_
@@ -31,7 +41,9 @@ public:
     // impossible.  :/
     virtual void update(bool& change) {}
     virtual void start() {}
+    virtual PGM_P getName() { return NULL; }
 
+    // the menus are driven as a singly-linked list
     uiBase* getNextState()          { return(next); }
     void setNextState(uiBase* ns)   { next = ns; }
 

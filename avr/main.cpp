@@ -19,8 +19,12 @@
 
 static volatile uint8_t isrMilliseconds = 0;
 static volatile uint8_t isrLastMilleseconds = 0;
+static uint32_t milliseconds = 0;
 
-uint32_t milliseconds = 0;
+uint32_t getTickCount()
+{
+    return (milliseconds);
+}
 
 int main(void)
 {
@@ -45,7 +49,7 @@ int main(void)
     // singleton instance of LCD handler,
     // LED string, and pushbutton handler classes
     lcd* display = lcd::getInstance();
-    //LEDString* string = LEDString::getInstance();
+    LEDString* ledstring = LEDString::getInstance();
     buttons* hdwr = buttons::getInstance();
     nvm* eeprom = nvm::getInstance();
 
@@ -62,6 +66,7 @@ int main(void)
     }
 
     display->clearAll();
+    ledstring->clear();
 
     // user interface drives it all
     ui interface;
@@ -105,7 +110,7 @@ int main(void)
             
             case 2:
             {
-                //string->update();
+                ledstring->update();
             }  break;
             
             case 3:

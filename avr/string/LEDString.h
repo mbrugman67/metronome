@@ -13,6 +13,7 @@ class LEDString
 public:
     static LEDString* getInstance();
 
+    void clear();
     void start(uint16_t bpm);
     void stop();
     void pretty();
@@ -20,7 +21,7 @@ public:
     void update();
     
 private:
-    LEDString() : leds(STRING_LENGTH) {}
+    LEDString() : leds() {}
     virtual ~LEDString() {}
 
     WS2812 leds;
@@ -29,15 +30,16 @@ private:
     static LEDString* _inst;
     static bool initDone;
     static bool running;
+    bool draw;
     
     bool movingRight;
     bool doPretty;
     uint16_t posn;
     uint16_t ticksPerMove;
-    uint16_t tickCount;
+    uint16_t moveTicks;
+    uint32_t lastTickCount;
 
     void init();
-    void clear();
     void metronome();
     void pattern();
 };

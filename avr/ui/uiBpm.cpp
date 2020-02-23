@@ -1,13 +1,25 @@
+/***************************************************
+ * file: uiBpm.h
+ ***************************************************
+ * Derived menu class
+ * This will adjust the BPM setting
+ **************************************************/
 
 #include "uiBpm.h"
 
 #include <string.h>
 #include <stdio.h>
 
-//                                 12345678901234567890
+//                           12345678901234567890
 const char line2[] PROGMEM = "Beats/Min: XXX      ";
 const char line3[] PROGMEM = "UP/DN to adjust     ";
 const char line4[] PROGMEM = "Entr=set, Mnu=next  ";
+const char menuName[] PROGMEM = "menu set BPM";
+
+PGM_P uiBpm::getName()
+{
+    return (menuName);
+}
 
 void uiBpm::start()
 {
@@ -32,7 +44,7 @@ void uiBpm::update(bool& change)
         return;
     }
 
-    if (doUpDown(bpm, 30, 240, 60))
+    if (doUpDown(bpm, 30, 240, DEFAULT_BPM))
     {
         this->updateBPMLine();
     }

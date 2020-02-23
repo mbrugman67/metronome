@@ -1,5 +1,21 @@
+/***************************************************
+ * file: uiBase.cpp
+ ***************************************************
+ * Base class for menu handler.  Each derived class
+ * will be a single menu function.  In an ideal 
+ * c++ world, this would be a pure virtual class,
+ * but without an implementation of libstdc++ this
+ * isn't possible.  (Same reason that you can't
+ * use new/delete)
+ **************************************************/
+
 #include "uiBase.h"
 
+/****************************************************
+ * constructor
+ ****************************************************
+ * get pointers to instances of the singletons
+ ***************************************************/
 uiBase::uiBase()
 {
     settings = nvm::getInstance();

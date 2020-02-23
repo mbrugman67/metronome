@@ -8,6 +8,12 @@
 const char line2[] PROGMEM = {"Contrast:           "};
 const char line3[] PROGMEM = {"UP/DN to adjust     "};
 const char line4[] PROGMEM = {"Entr=set, Mnu=next  "};
+const char menuName[] PROGMEM = "menu set contrast";
+
+PGM_P uiContrast::getName()
+{
+    return (menuName);
+}
 
 void uiContrast::start()
 {
@@ -25,16 +31,17 @@ void uiContrast::update(bool& change)
 {
     change = false;
     ++count;
-    
+
     if (btns->menuOneShot())
     {
         change = true;
         return;
     }
 
-    if (doUpDown(contrast, 0, 100, 40))
+    if (doUpDown(contrast, 0, 100, DEFAULT_CONTRAST))
     {
         this->updateContrastLine();
+        display->setContrast(contrast);
     }
 
     if (saveDelay)

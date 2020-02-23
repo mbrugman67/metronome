@@ -12,6 +12,7 @@ public:
 
     void update(bool& change);
     void start();
+    PGM_P getName();
 
 private:
     uint16_t contrast;

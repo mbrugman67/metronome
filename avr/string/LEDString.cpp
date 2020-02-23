@@ -18,6 +18,7 @@ LEDString* LEDString::getInstance()
     if (!_inst)
     {
         _inst = (LEDString*)malloc(sizeof(LEDString));
+        _inst->init();
     }
 
     return (_inst);
@@ -29,8 +30,9 @@ void LEDString::init()
     {
         initDone = true;
 
-        leds.setOutput(&PORTD, &DDRD, PIND2);
-        leds.setColorOrderRGB();
+        leds.setOutput(&PORTD, &DDRD, PIND4);
+
+        lastTickCount = getTickCount();
     }
 }
 
@@ -43,7 +45,7 @@ void LEDString::start(uint16_t bpm)
     uint32_t rate = (uint32_t)(60000 / TASK_INTERVAL) / (uint32_t)bpm;
     ticksPerMove = (uint16_t)rate / STRING_LENGTH;
 
-    tickCount = 0;
+    moveTicks = 0;
     posn = 0;
     movingRight = true;
     running = true;
@@ -77,19 +79,21 @@ void LEDString::clear()
     {
         leds.set_crgb_at(ii, pixel);
     }
+
+    draw = true;
 }
 
 void LEDString::metronome()
 {
-    this->clear();
-
-    if (tickCount >= ticksPerMove)
+    if ((++moveTicks) >= ticksPerMove)
     {
-        ticksPerMove = 0;
+        this->clear();
+        moveTicks = 0;
+        draw = true;
 
         pixel.r = 255;
-        pixel.g = 255;
-        pixel.b = 255;
+        pixel.g = 80;
+        pixel.b = 0;
         leds.set_crgb_at(posn, pixel);
 
         if (movingRight)
@@ -125,9 +129,7 @@ void LEDString::pattern()
 }
 
 void LEDString::update()
-{
-    ++tickCount;
-    
+{   
     if (running)
     {
         this->metronome();
@@ -141,7 +143,9 @@ void LEDString::update()
         this->clear();
     }
     
-    //cli();
-    //leds.sync();
-    //sei();
+    if (draw)
+    {  
+        draw = false;
+        leds.sync();
+    }
 }

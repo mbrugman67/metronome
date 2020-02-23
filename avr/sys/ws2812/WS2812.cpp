@@ -15,8 +15,11 @@
 #include "WS2812.h"
 #include <stdlib.h>
 
-WS2812::WS2812(uint16_t num_leds) {
-	count_led = num_leds;
+#include <stdio.h>
+#include <avr/pgmspace.h>
+
+WS2812::WS2812() {
+	count_led = 12;
 	
 	pixels = (uint8_t*)malloc(count_led*3);
 	#ifdef RGB_ORDER_ON_RUNTIME	
@@ -71,6 +74,8 @@ uint8_t WS2812::set_subpixel_at(uint16_t index, uint8_t offset, uint8_t px_value
 
 void WS2812::sync() {
 	*ws2812_port_reg |= pinMask; // Enable DDR
+	// HACK HACK HACK WTF??
+	count_led = 12;
 	ws2812_sendarray_mask(pixels,3*count_led,pinMask,(uint8_t*) ws2812_port,(uint8_t*) ws2812_port_reg );	
 }
 
@@ -99,16 +104,8 @@ WS2812::~WS2812() {
 	
 }
 
-#ifndef ARDUINO
 void WS2812::setOutput(const volatile uint8_t* port, volatile uint8_t* reg, uint8_t pin) {
 	pinMask = (1 << pin);
 	ws2812_port = port;
 	ws2812_port_reg = reg;
 }
-#else
-void WS2812::setOutput(uint8_t pin) {
-	pinMask = digitalPinToBitMask(pin);
-	ws2812_port = portOutputRegister(digitalPinToPort(pin));
-	ws2812_port_reg = portModeRegister(digitalPinToPort(pin));
-}
-#endif 
