@@ -2,54 +2,56 @@
 
 #include <avr/io.h>
 
-#include "LEDString.h"
+#include "../project.h"
 
 #ifdef DEBUG
 #include <stdio.h>
 #include <avr/pgmspace.h>
 #endif
 
-LEDString* LEDString::_inst = NULL;
-bool LEDString::initDone = false;
-bool LEDString::running = false;
-
-LEDString* LEDString::getInstance()
+LEDString::LEDString() : leds()
 {
-    if (!_inst)
-    {
-        _inst = (LEDString*)malloc(sizeof(LEDString));
-        _inst->init();
-    }
-
-    return (_inst);
+    leds.setOutput(&PORTD, &DDRD, PIND4);
+    lastTickCount = getTickCount();
 }
 
-void LEDString::init()
+void LEDString::start(led_mode_t m, uint16_t b)
 {
-    if (!initDone)
+    switch ((uint16_t)m)
     {
-        initDone = true;
-
-        leds.setOutput(&PORTD, &DDRD, PIND4);
-
-        lastTickCount = getTickCount();
+        case MODE_METRO:        this->startMetronome(b);
+        case MODE_PULSE:        this->startPulse(b);
+        case MODE_WHQ:          this->startWHQ(b);
     }
+
+    mode = m;
 }
 
-void LEDString::start(uint16_t bpm)
+void LEDString::startPulse(uint16_t bpm)
+{
+
+}
+
+void LEDString::startWHQ(uint16_t bpm)
+{
+    
+}
+
+void LEDString::startMetronome(uint16_t bpm)
 {
     // so, the active LED should move from one end of the
     // string to the other at bpm rate (beats/minute)
     // this all depends on the length of the string and
     // how often the update method gets hit
-    uint32_t rate = (uint32_t)(60000 / TASK_INTERVAL) / (uint32_t)bpm;
+    // 
+    // it takes 45ms to update the whole string
+    uint32_t rate = (uint32_t)(59955 / TASK_INTERVAL) / (uint32_t)bpm;
     ticksPerMove = (uint16_t)rate / STRING_LENGTH;
 
     moveTicks = 0;
     posn = 0;
     movingRight = true;
     running = true;
-    doPretty = false;
 
 #ifdef DEBUG
     printf_P(PSTR("Starting metronome at %d BPM, %d updates/move\n"),
@@ -60,13 +62,6 @@ void LEDString::start(uint16_t bpm)
 void LEDString::stop()
 {
     running = false;
-    doPretty = false;
-}
-
-void LEDString::pretty()
-{
-    running = false;
-    doPretty = true;
 }
 
 void LEDString::clear()
@@ -81,6 +76,16 @@ void LEDString::clear()
     }
 
     draw = true;
+}
+
+void LEDString::pulse()
+{
+
+}
+
+void LEDString::WHQ()
+{
+
 }
 
 void LEDString::metronome()
@@ -123,24 +128,16 @@ void LEDString::metronome()
     }
 }
 
-void LEDString::pattern()
-{
-    ;
-}
-
 void LEDString::update()
 {   
     if (running)
     {
-        this->metronome();
-    }
-    else if (doPretty)
-    {
-        this->pattern();
-    }
-    else
-    {
-        this->clear();
+        switch (mode)
+        {
+            case MODE_METRO:    this->metronome();
+            case MODE_PULSE:    this->pulse();
+            case MODE_WHQ:      this->WHQ();
+        }
     }
     
     if (draw)

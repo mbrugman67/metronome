@@ -28,8 +28,8 @@
 class buttons
 {
 public:
-    // this is a singleton class
-    static buttons* getInstance();
+    buttons();
+    ~buttons() {}
 
     // this method must be called exactly once per task time
     void update();
@@ -60,10 +60,6 @@ private:
         ENTER,
         BUTTON_COUNT
     };
-
-    buttons() {}
-    virtual ~buttons() {}
-    void init();
 
     // Handy struct to hold everything for 
     // all four buttons
@@ -99,8 +95,6 @@ private:
     {
         return (btn == BUTTON_HELD);
     }
-
-    static buttons* _inst;
 
 #ifdef DEBUG
     inline const char* buttonStateToText(uint8_t s)

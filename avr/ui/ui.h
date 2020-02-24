@@ -20,6 +20,7 @@
 #include "uiBase.h"
 #include "uiIdle.h"
 #include "uiBpm.h"
+#include "uiMode.h"
 #include "uiContrast.h"
 
 class ui
@@ -57,12 +58,10 @@ private:
     menu_state_t state;
     action_state_t action;
 
-    lcd* display;
-    nvm* settings;
-
     uiBase* currentState;
     uiIdle stateIdle;
     uiBpm stateBPM;
+    uiMode stateMode;
     uiContrast stateContrast;
 };
 

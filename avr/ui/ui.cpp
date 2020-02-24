@@ -31,13 +31,11 @@ ui::ui()
     state = MENU_STATE_IDLE;
     action = ACTION_STOPPED;
 
-    display = lcd::getInstance();
-    settings = nvm::getInstance();
-
-    display->setContrast(settings->getContrast());
+    display.setContrast(settings.getContrast());
 
     stateIdle.setNextState(&stateBPM);
-    stateBPM.setNextState(&stateContrast);
+    stateBPM.setNextState(&stateMode);
+    stateMode.setNextState(&stateContrast);
     stateContrast.setNextState(&stateIdle);
 
     currentState = &stateIdle;

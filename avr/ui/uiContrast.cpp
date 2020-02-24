@@ -17,12 +17,12 @@ PGM_P uiContrast::getName()
 
 void uiContrast::start()
 {
-    display->writePString(LINE_1, line1);
-    display->writePString(LINE_2, line2);
-    display->writePString(LINE_3, line3);
-    display->writePString(LINE_4, line4);
+    display.writePString(LINE_1, line1);
+    display.writePString(LINE_2, line2);
+    display.writePString(LINE_3, line3);
+    display.writePString(LINE_4, line4);
 
-    contrast = settings->getContrast();
+    contrast = settings.getContrast();
     this->updateContrastLine();
     saveDelay = 0;
 }
@@ -32,7 +32,7 @@ void uiContrast::update(bool& change)
     change = false;
     ++count;
 
-    if (btns->menuOneShot())
+    if (btns.menuOneShot())
     {
         change = true;
         return;
@@ -41,7 +41,7 @@ void uiContrast::update(bool& change)
     if (doUpDown(contrast, 0, 100, DEFAULT_CONTRAST))
     {
         this->updateContrastLine();
-        display->setContrast(contrast);
+        display.setContrast(contrast);
     }
 
     if (saveDelay)
@@ -50,8 +50,8 @@ void uiContrast::update(bool& change)
 
         if (!saveDelay)
         {
-            settings->setContrast(contrast);
-            settings->saveNVM();
+            settings.setContrast(contrast);
+            settings.saveNVM();
         }
     }
 }
@@ -60,5 +60,5 @@ void uiContrast::update(bool& change)
 void uiContrast::updateContrastLine()
 {
     snprintf(buffer, 20, "%3d", contrast);
-    display->writeString(LINE_2, buffer, 11);
+    display.writeString(LINE_2, buffer, 11);
 }

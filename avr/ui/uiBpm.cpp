@@ -23,12 +23,12 @@ PGM_P uiBpm::getName()
 
 void uiBpm::start()
 {
-    display->writePString(LINE_1, line1);
-    display->writePString(LINE_2, line2);
-    display->writePString(LINE_3, line3);
-    display->writePString(LINE_4, line4);
+    display.writePString(LINE_1, line1);
+    display.writePString(LINE_2, line2);
+    display.writePString(LINE_3, line3);
+    display.writePString(LINE_4, line4);
 
-    bpm = settings->getBPM();
+    bpm = settings.getBPM();
     this->updateBPMLine();
     saveDelay = 0;
 }
@@ -38,7 +38,7 @@ void uiBpm::update(bool& change)
     change = false;
     ++count;
 
-    if (btns->menuOneShot())
+    if (btns.menuOneShot())
     {
         change = true;
         return;
@@ -55,15 +55,14 @@ void uiBpm::update(bool& change)
 
         if (!saveDelay)
         {
-            settings->setBPM(bpm);
-            settings->saveNVM();
+            settings.setBPM(bpm);
+            settings.saveNVM();
         }
     }
 }
 
-
 void uiBpm::updateBPMLine()
 {
     snprintf(buffer, 20, "%3d", bpm);
-    display->writeString(LINE_2, buffer, 11);
+    display.writeString(LINE_2, buffer, 11);
 }

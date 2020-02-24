@@ -11,37 +11,44 @@
 class LEDString
 {
 public:
-    static LEDString* getInstance();
+    enum led_mode_t
+    {
+        MODE_METRO,
+        MODE_PULSE,
+        MODE_WHQ,
+    };
+
+    LEDString();
+    ~LEDString() {}
 
     void clear();
-    void start(uint16_t bpm);
+    void start(led_mode_t m, uint16_t bpm);
     void stop();
-    void pretty();
 
     void update();
     
 private:
-    LEDString() : leds() {}
-    virtual ~LEDString() {}
 
     WS2812 leds;
     cRGB pixel;
 
-    static LEDString* _inst;
-    static bool initDone;
-    static bool running;
+    bool running;
     bool draw;
     
     bool movingRight;
-    bool doPretty;
+    led_mode_t mode;
     uint16_t posn;
     uint16_t ticksPerMove;
     uint16_t moveTicks;
     uint32_t lastTickCount;
 
-    void init();
+    void startMetronome(uint16_t bpm);
+    void startWHQ(uint16_t bpm);
+    void startPulse(uint16_t bpm);
+
     void metronome();
-    void pattern();
+    void pulse();
+    void WHQ();
 };
 
 #endif // STRING_H_

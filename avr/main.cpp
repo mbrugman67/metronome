@@ -21,6 +21,11 @@ static volatile uint8_t isrMilliseconds = 0;
 static volatile uint8_t isrLastMilleseconds = 0;
 static uint32_t milliseconds = 0;
 
+lcd display;
+LEDString ledstring;
+buttons btns;
+nvm settings;
+
 uint32_t getTickCount()
 {
     return (milliseconds);
@@ -45,28 +50,11 @@ int main(void)
     setupIO();
     setupTimer1();
     setupTimer2();
-    
-    // singleton instance of LCD handler,
-    // LED string, and pushbutton handler classes
-    lcd* display = lcd::getInstance();
-    LEDString* ledstring = LEDString::getInstance();
-    buttons* hdwr = buttons::getInstance();
-    nvm* eeprom = nvm::getInstance();
 
-    // if, for some reason, the singletons weren't 
-    // instantiated, just turn on the red LED and
-    // loop forever. No worries about the watchdog,
-    // it hasn't been started yet
-    if (!display || !hdwr || !eeprom)
-    {
-        while (true)
-        {
-            LED_L_ON();
-        }
-    }
-
-    display->clearAll();
-    ledstring->clear();
+    display.init();
+    display.clearAll();
+    ledstring.clear();
+    settings.loadNVM();
 
     // user interface drives it all
     ui interface;
@@ -76,7 +64,7 @@ int main(void)
 
 #ifdef DEBUG
     printf_P(PSTR("Starting metronome main loop, boot count %d\r\n"),
-        eeprom->getBootCount());
+        settings.getBootCount());
 #endif
 
     uint16_t blinkyTimer = 0;
@@ -105,12 +93,12 @@ int main(void)
 
             case 1:
             {
-                hdwr->update();
+                btns.update();
             }  break;
             
             case 2:
             {
-                ledstring->update();
+                ledstring.update();
             }  break;
             
             case 3:

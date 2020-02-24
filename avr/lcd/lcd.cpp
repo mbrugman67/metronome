@@ -19,7 +19,7 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
-#include "lcd.h"
+#include "../project.h"
 #include "../sys/ioDefinitions.h"
 
 static volatile uint8_t backlightPWMVal;
@@ -33,24 +33,46 @@ static volatile uint8_t backlightPWMVal;
 // 4 x 20 display
 #define MAX_LINE_LENGTH     20
 
-lcd* lcd::_inst = NULL;
-
 /************************************************
  * getInstance()
  ************************************************
  * this class is a singleton, get the one instance
  * and if it doesn't exist yet, create and init it
  ***********************************************/
-lcd* lcd::getInstance()
+void lcd::init()
 {
-    if (!_inst)
+    backlightPWMVal = 40;
+
+    LCD_RS_OFF();
+
+    // wait for LCD to be sure it's powered up
+    for (size_t ii = 0; ii < 10; ++ii)
     {
-        _inst = (lcd*)malloc(sizeof(lcd));
-        backlightPWMVal = 40;
-        _inst->init();
+        _delay_ms(5);  
     }
 
-    return (_inst);
+    // startup sequence.  The manual sez so.
+    this->writeNibble(0x03);
+    _delay_ms(5);
+    this->writeNibble(0x03);
+    _delay_ms(5);
+    this->writeNibble(0x03);
+    _delay_ms(5);
+
+    // 4-bit mode
+    this->writeNibble(0x02);
+    _delay_ms(5);
+
+    // display on, cursor hidden
+    this->sendCmd(0x28);
+    _delay_ms(1);
+
+    this->sendCmd(0x0c);
+    this->sendCmd(0x06);
+
+#ifdef DEBUG
+    printf_P(PSTR("LCD init done\n"));
+#endif
 }
 
 /************************************************
@@ -180,49 +202,6 @@ uint16_t lcd::getContrast() const
 }
 
 
-
-/************************************************
- * init()
- ************************************************
- * initialize the display.  4-bit control, 
- * display on, cursor hidden.  It will be in 
- * one-line mode, meaning display will not 
- * wrap at the end of the line
- ***********************************************/
-void lcd::init()
-{
-    // initial I/O states
-    LCD_RS_OFF();
-
-    // wait for LCD to be sure it's powered up
-    for (size_t ii = 0; ii < 10; ++ii)
-    {
-        _delay_ms(5);  
-    }
-
-    // startup sequence.  The manual sez so.
-    this->writeNibble(0x03);
-    _delay_ms(5);
-    this->writeNibble(0x03);
-    _delay_ms(5);
-    this->writeNibble(0x03);
-    _delay_ms(5);
-
-    // 4-bit mode
-    this->writeNibble(0x02);
-    _delay_ms(5);
-
-    // display on, cursor hidden
-    this->sendCmd(0x28);
-    _delay_ms(1);
-
-    this->sendCmd(0x0c);
-    this->sendCmd(0x06);
-
-#ifdef DEBUG
-    printf_P(PSTR("LCD init done\n"));
-#endif
-}
 
 /************************************************
  * writeNibble()

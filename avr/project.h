@@ -6,6 +6,16 @@
 *******************************************/
 #include <stdint.h>
 
+#include "./lcd/lcd.h"
+#include "./string/LEDString.h"
+#include "./buttons/buttons.h"
+#include "./nvm/nvm.h"
+
+extern lcd display;
+extern LEDString ledstring;
+extern buttons btns;
+extern nvm settings;
+
 /*********************************************
 * Number of LEDS in the metronome string
 **********************************************/

@@ -18,11 +18,6 @@
  ***************************************************/
 uiBase::uiBase()
 {
-    settings = nvm::getInstance();
-    btns = buttons::getInstance();
-    display = lcd::getInstance();
-    leds = LEDString::getInstance();
-
     next = NULL;
 
     count = 0;
@@ -43,7 +38,7 @@ bool uiBase::doUpDown(uint16_t& val, const uint16_t low, const uint16_t hi, cons
 {
     bool changed = false;
 
-    if (btns->isDownHeld() && btns->isUpHeld())
+    if (btns.isDownHeld() && btns.isUpHeld())
     {
         if (val != (dflt - 1))
         {
@@ -52,7 +47,7 @@ bool uiBase::doUpDown(uint16_t& val, const uint16_t low, const uint16_t hi, cons
             saveDelay = WAIT_4_SAVE_TIME;
         }
     } 
-    else if (btns->downOneShot() || (btns->isDownHeld() && !(count % 8)))
+    else if (btns.downOneShot() || (btns.isDownHeld() && !(count % 8)))
     {
         if (val > low)
         {
@@ -61,7 +56,7 @@ bool uiBase::doUpDown(uint16_t& val, const uint16_t low, const uint16_t hi, cons
             saveDelay = WAIT_4_SAVE_TIME;
         }
     }
-    else if (btns->upOneShot() || (btns->isUpHeld() && !(count % 8)))
+    else if (btns.upOneShot() || (btns.isUpHeld() && !(count % 8)))
     {
         if (val < hi)
         {

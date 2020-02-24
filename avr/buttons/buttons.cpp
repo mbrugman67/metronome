@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "buttons.h"
 #include "../project.h"
 
 #ifdef DEBUG
@@ -61,9 +60,6 @@ static inline bool fnEnterBtn()
 #define DEBOUNCE_TIME   20 / (TASK_INTERVAL)
 #define HOLD_TIME       500 / (TASK_INTERVAL)
 
-// singleton instance
-buttons* buttons::_inst = NULL;
-
 /************************************************
  * getInstance()
  ************************************************
@@ -71,25 +67,18 @@ buttons* buttons::_inst = NULL;
  * of this class.  If it hasn't been instantiated
  * yet, do it now.  
  ***********************************************/ 
-buttons* buttons::getInstance()
+buttons::buttons()
 {
-    if (!_inst)
-    {
-        _inst = (buttons*)malloc(sizeof(buttons));
+    // button function pointers into the button structure
+    btns[MENU].btnFnc    = fnMenuBtn;
+    btns[UP].btnFnc      = fnUpBtn;
+    btns[DOWN].btnFnc    = fnDownBtn;
+    btns[ENTER].btnFnc   = fnEnterBtn;
 
-        // button function pointers into the button structure
-        _inst->btns[MENU].btnFnc    = fnMenuBtn;
-        _inst->btns[UP].btnFnc      = fnUpBtn;
-        _inst->btns[DOWN].btnFnc    = fnDownBtn;
-        _inst->btns[ENTER].btnFnc   = fnEnterBtn;
-
-        strncpy(_inst->btns[MENU].name, "Menu", 8);
-        strncpy(_inst->btns[UP].name, "Up", 8);
-        strncpy(_inst->btns[DOWN].name, "Down", 8);
-        strncpy(_inst->btns[ENTER].name, "Enter", 8);
-    }
-
-    return (_inst);
+    strncpy(btns[MENU].name, "Menu", 8);
+    strncpy(btns[UP].name, "Up", 8);
+    strncpy(btns[DOWN].name, "Down", 8);
+    strncpy(btns[ENTER].name, "Enter", 8);
 }
 
 /************************************************

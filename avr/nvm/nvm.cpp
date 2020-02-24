@@ -17,20 +17,6 @@
 
 #include <avr/eeprom.h>
 
-nvm* nvm::_inst = NULL;
-
-nvm* nvm::getInstance()
-{
-    if (!nvm::_inst)
-    {
-        nvm::_inst = (nvm*)malloc(sizeof(nvm));
-
-        _inst->loadNVM();
-    }
-
-    return (_inst);
-}
-
 void nvm::setDefaults()
 {
     data.signature = EEPROM_SIGNATURE;

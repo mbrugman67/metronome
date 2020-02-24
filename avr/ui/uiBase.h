@@ -54,10 +54,6 @@ protected:
     uint16_t saveDelay;
 
     uiBase* next;
-    nvm* settings;
-    buttons* btns;
-    lcd* display;
-    LEDString* leds;
 
     bool doUpDown(uint16_t& val, const uint16_t low, const uint16_t hi, const uint16_t dflt);
 

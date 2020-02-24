@@ -25,7 +25,10 @@ enum lcd_line_t
 class lcd
 {
 public: 
-    static lcd* getInstance();
+    lcd() {};
+    ~lcd() {}
+
+    void init();
 
     void clearAll() const;
     void clearLine(lcd_line_t line) const;
@@ -38,10 +41,6 @@ public:
     uint16_t getContrast() const;
 
 private:
-    lcd(bool debug = false) {}
-    virtual ~lcd() {}
-    static lcd* _inst;
-    void init();
 
     void writeNibble(uint8_t b) const;
     void writeByte(uint8_t b) const;

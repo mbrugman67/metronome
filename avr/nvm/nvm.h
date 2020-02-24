@@ -12,7 +12,7 @@
 #define EEPROM_SIGNATURE    0xCAFE
 #define DEFAULT_CONTRAST    40
 #define DEFAULT_BPM         60
-#define DEFAULT_MODE         1
+#define DEFAULT_MODE         0
 #define DEFAULT_RGB         {0xff, 0x80, 0x00}
 
 class ledclr
@@ -40,8 +40,9 @@ private:
 class nvm
 {
 public:
-    static nvm* getInstance();
-
+    nvm() {}
+    ~nvm() {}
+    
     void saveNVM();
     bool loadNVM();
     void setDefaults();
@@ -64,10 +65,6 @@ public:
 
 
 private:
-    nvm() {}
-    virtual ~nvm() {}
-    static nvm* _inst;
-
     struct nvm_store_t
     {
         uint16_t    signature;
