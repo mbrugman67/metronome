@@ -37,8 +37,10 @@ private:
     
     bool movingRight;
     led_mode_t mode;
+    uint8_t cycle;
     uint16_t posn;
     uint16_t ticksPerMove;
+    uint16_t secondaryTicks;
     uint16_t moveTicks;
     uint32_t lastTickCount;
 
