@@ -7,9 +7,9 @@
 #include <stdint.h>
 
 #include "./lcd/lcd.h"
+#include "./nvm/nvm.h"
 #include "./string/LEDString.h"
 #include "./buttons/buttons.h"
-#include "./nvm/nvm.h"
 
 extern lcd display;
 extern LEDString ledstring;

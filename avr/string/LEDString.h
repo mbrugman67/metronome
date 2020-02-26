@@ -16,13 +16,15 @@ public:
         MODE_METRO,
         MODE_PULSE,
         MODE_WHQ,
+        MODE_SAMPLE
     };
 
     LEDString();
     ~LEDString() {}
 
     void clear();
-    void start(led_mode_t m, uint16_t bpm);
+    void start();
+    void startSample();
     void stop();
 
     void update();
@@ -37,6 +39,7 @@ private:
     
     bool movingRight;
     led_mode_t mode;
+    ledclr clr;
     uint8_t cycle;
     uint16_t posn;
     uint16_t ticksPerMove;
@@ -51,6 +54,7 @@ private:
     void metronome();
     void pulse();
     void WHQ();
+    void sample();
 };
 
 #endif // STRING_H_

@@ -22,6 +22,8 @@
 #include "uiBpm.h"
 #include "uiMode.h"
 #include "uiContrast.h"
+#include "uiColor.h"
+#include "uiInfo.h"
 
 class ui
 {
@@ -63,6 +65,8 @@ private:
     uiBpm stateBPM;
     uiMode stateMode;
     uiContrast stateContrast;
+    uiColor stateColor;
+    uiInfo stateInfo;
 };
 
 #endif // UI_H_

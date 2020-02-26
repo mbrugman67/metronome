@@ -49,6 +49,14 @@ void uiBpm::update(bool& change)
         this->updateBPMLine();
     }
 
+    if (btns.enterOneShot() && saveDelay)
+    {
+        saveDelay = 0;
+        settings.setBPM(bpm);
+        settings.saveNVM();
+    }
+
+    /*
     if (saveDelay)
     {
         --saveDelay;
@@ -59,6 +67,7 @@ void uiBpm::update(bool& change)
             settings.saveNVM();
         }
     }
+    */
 }
 
 void uiBpm::updateBPMLine()

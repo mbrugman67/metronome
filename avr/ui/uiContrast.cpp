@@ -44,18 +44,14 @@ void uiContrast::update(bool& change)
         display.setContrast(contrast);
     }
 
-    if (saveDelay)
+    if (btns.enterOneShot() && saveDelay)
     {
-        --saveDelay;
+        saveDelay = 0;
 
-        if (!saveDelay)
-        {
-            settings.setContrast(contrast);
-            settings.saveNVM();
-        }
+        settings.setContrast(contrast);
+        settings.saveNVM();
     }
 }
-
 
 void uiContrast::updateContrastLine()
 {

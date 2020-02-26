@@ -62,6 +62,7 @@ public:
     void setContrast(uint16_t c)    { data.contrast = c; }
     void setBPM(uint16_t b)         { data.bpm = b; }
     void setMode(uint16_t m)        { data.mode = m; }
+    void setSweepColor(ledclr& c)   { data.sweepClr = c; }
 
 
 private:

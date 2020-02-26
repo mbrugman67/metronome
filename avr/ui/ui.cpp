@@ -36,7 +36,9 @@ ui::ui()
     stateIdle.setNextState(&stateBPM);
     stateBPM.setNextState(&stateMode);
     stateMode.setNextState(&stateContrast);
-    stateContrast.setNextState(&stateIdle);
+    stateContrast.setNextState(&stateColor);
+    stateColor.setNextState(&stateInfo);
+    stateInfo.setNextState(&stateIdle);
 
     currentState = &stateIdle;
     currentState->start();

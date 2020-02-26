@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include <avr/io.h>
 
@@ -15,16 +16,28 @@ LEDString::LEDString() : leds()
     lastTickCount = getTickCount();
 }
 
-void LEDString::start(led_mode_t m, uint16_t b)
+void LEDString::start()
 {
-    switch ((uint16_t)m)
-    {
-        case MODE_METRO:        this->startMetronome(b);    break;
-        case MODE_PULSE:        this->startPulse(b);        break;
-        case MODE_WHQ:          this->startWHQ(b);          break;
-    }
+    uint16_t bpm = settings.getBPM();
+    mode = (led_mode_t)settings.getMode();
 
-    mode = m;
+    switch (mode)
+    {
+        case MODE_METRO:        this->startMetronome(bpm);    break;
+        case MODE_PULSE:        this->startPulse(bpm);        break;
+        case MODE_WHQ:          this->startWHQ(bpm);          break;
+        case MODE_SAMPLE:       break;
+    }
+}
+
+void LEDString::startSample()
+{
+    running = true;
+    clr.setRed(0);
+    clr.setGrn(0);
+    clr.setBlu(0);
+
+    mode = MODE_SAMPLE;
 }
 
 void LEDString::startPulse(uint16_t bpm)
@@ -116,15 +129,37 @@ void LEDString::clear()
     draw = true;
 }
 
+void LEDString::sample()
+{
+    if (settings.getSweepClr()->getRed() != clr.getRed() ||
+        settings.getSweepClr()->getGrn() != clr.getGrn() ||
+        settings.getSweepClr()->getBlu() != clr.getBlu())
+    {
+        memcpy((void*)&clr, (void*)settings.getSweepClr(), sizeof(ledclr));
+        this->clear();
+
+        pixel.r = clr.getRed();
+        pixel.g = clr.getGrn();
+        pixel.b = clr.getBlu();
+
+        for (size_t ii = 2; ii < STRING_LENGTH - 2; ++ii)
+        {
+            leds.set_crgb_at(ii, pixel);
+        }
+    
+        draw = true;
+    }
+}
+
 void LEDString::pulse()
 {
     ++moveTicks;
 
     if (moveTicks < secondaryTicks)
     {
-        pixel.r = 255;
-        pixel.g = 80;
-        pixel.b = 0;
+        pixel.r = settings.getSweepClr()->getRed();
+        pixel.g = settings.getSweepClr()->getGrn();
+        pixel.b = settings.getSweepClr()->getBlu();
 
         for (size_t ii = 0; ii < STRING_LENGTH; ++ii)
         {
@@ -144,7 +179,6 @@ void LEDString::pulse()
     {
         moveTicks = 0;
     }
-
 }
 
 void LEDString::WHQ()
@@ -155,18 +189,14 @@ void LEDString::WHQ()
 
         this->clear();
 
-        pixel.r = 255;
-        pixel.g = 80;
-        pixel.b = 0;
+        pixel.r = settings.getSweepClr()->getRed();
+        pixel.g = settings.getSweepClr()->getGrn();
+        pixel.b = settings.getSweepClr()->getBlu();
 
         ++cycle;
         // every quarter note
-        //for (size_t ii = 8; ii < 12; ++ii)
-        {
-            //leds.set_crgb_at(ii, pixel);
-            leds.set_crgb_at(9, pixel);
-            leds.set_crgb_at(10, pixel);
-        }
+        leds.set_crgb_at(9, pixel);
+        leds.set_crgb_at(10, pixel);
 
         // half every other
         if (!(cycle % 2))
@@ -199,9 +229,10 @@ void LEDString::metronome()
         moveTicks = 0;
         draw = true;
 
-        pixel.r = 255;
-        pixel.g = 80;
-        pixel.b = 0;
+        pixel.r = settings.getSweepClr()->getRed();
+        pixel.g = settings.getSweepClr()->getGrn();
+        pixel.b = settings.getSweepClr()->getBlu();
+        
         leds.set_crgb_at(posn, pixel);
 
         if (movingRight)
@@ -240,6 +271,7 @@ void LEDString::update()
             case MODE_METRO:    this->metronome();  break;
             case MODE_PULSE:    this->pulse();      break;
             case MODE_WHQ:      this->WHQ();        break;
+            case MODE_SAMPLE:   this->sample();     break;
         }
     }
     

@@ -27,7 +27,10 @@ void uiMode::start()
     display.writePString(LINE_2, line2);
     display.writePString(LINE_3, line3);
     display.writePString(LINE_4, line4);
-    this->updateModeLine(settings.getMode());
+
+    mode = settings.getMode();
+    this->updateModeLine(mode);
+    
     saveDelay = 0;
 }
 
@@ -62,14 +65,11 @@ void uiMode::update(bool& change)
         saveDelay = WAIT_4_SAVE_TIME;
     }
 
-    if (saveDelay)
+    if (btns.enterOneShot() && saveDelay)
     {
-        --saveDelay;
+        saveDelay = 0;
 
-        if (!saveDelay)
-        {
-            settings.setMode(mode);
-            settings.saveNVM();
-        }
+        settings.setMode(mode);
+        settings.saveNVM();
     }
 }

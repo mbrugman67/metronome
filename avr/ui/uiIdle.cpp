@@ -2,10 +2,11 @@
 #include "uiIdle.h"
 #include <stdio.h>
 
-//                                    12345678901234567890
-static const char line2[] PROGMEM = {"XXX BPM,            "};
-static const char line3[] PROGMEM = {"Entr to start       "};
-static const char line4[] PROGMEM = {"Menu for settings   "};
+//                                     12345678901234567890
+static const char line2[] PROGMEM  = {"XXX BPM,            "};
+static const char line3[] PROGMEM  = {"Entr to start       "};
+static const char line3a[] PROGMEM = {"Entr to stop        "};
+static const char line4[] PROGMEM  = {"Menu for settings   "};
 const char menuName[] PROGMEM = "menu idle";
 
 PGM_P uiIdle::getName()
@@ -45,11 +46,15 @@ void uiIdle::update(bool& change)
     {
         if (!running)
         {
-            ledstring.start((LEDString::led_mode_t)settings.getMode(), settings.getBPM());
+            display.writePString(LINE_3, line3a);
+            display.clearLine(LINE_4);
+            ledstring.start();
             running = true;
         }
         else
         {
+            display.writePString(LINE_3, line3);
+            display.writePString(LINE_4, line4);
             ledstring.stop();
             running = false;
         }
