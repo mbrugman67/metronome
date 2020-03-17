@@ -67,6 +67,7 @@ void ui::update()
 #endif
 
        currentState = currentState->getNextState();
+       display.clearAll();
        currentState->start();
 #ifdef DEBUG
     printf_P(PSTR(" to "));

@@ -30,11 +30,6 @@ guarantee is given to accuracy; always refer to datasheets if
 there's any questions
 
 Feel free to add more AVR models
-
-By the way, I detest weakly typed languages like python.  I'm 
-only writing this in python as a learning thing.  Employers 
-seem to like this shit for whatever reason.  Maybe because 
-it's a damned bootcamp language, I dunno....
 '''
 
 class ATMega328p():
@@ -302,7 +297,7 @@ class TimerCalc():
             print ' '
  
  #############################################################
- ###### I HATE PYTHON ########################################
+ #### main() #################################################
  #############################################################
 
 if __name__ == '__main__':
