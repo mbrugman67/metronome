@@ -275,8 +275,8 @@ class TimerCalc():
         timer, the resolution, and the valid combinations of prescaler
         and preset count
         '''
-        print '{} ({}-bit resolution):'.format(timer.name, timer.resolution)
-        print self._getPrintHeaderStr()
+        print ('{} ({}-bit resolution):'.format(timer.name, timer.resolution))
+        print (self._getPrintHeaderStr())
 
         # each register in the timer
         for register in timer.registers:
@@ -285,7 +285,7 @@ class TimerCalc():
             for (prescaler, bits) in register.scalerSettings:
                 s = self._getPrintLineStr(prescaler, timer.resolution, register.name, bits)
                 if s != None:
-                    print s
+                    print (s)
  
     def printAllTimers(self):
         '''
@@ -294,7 +294,7 @@ class TimerCalc():
         '''
         for timer in self.timers:
             self.printTimer(timer)
-            print ' '
+            print (' ')
  
  #############################################################
  #### main() #################################################
@@ -321,7 +321,7 @@ if __name__ == '__main__':
     elif args.part == '644':
         avr = ATMega644()
     else:
-        print 'unknown part "{}"'.format(args.part)
+        print ('unknown part "{}"'.format(args.part))
         quit()
  
     cipherTimer = TimerCalc(avr, args.rate, args.cpuFreq * 1000000)
@@ -331,7 +331,7 @@ if __name__ == '__main__':
    
     print ('Desired timer update rate is {:>.3f} millisconds ({:>.3f}KHz)'.
             format(cipherTimer.interval, cipherTimer.frequency / 1000.0))
-    print ' '
+    print (' ')
  
     cipherTimer.printAllTimers()
  
